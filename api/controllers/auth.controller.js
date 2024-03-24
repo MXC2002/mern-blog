@@ -1,4 +1,4 @@
-import User from "../models/user.momdel.js";
+import User from "../models/user.model.js";
 import bcryptjs from 'bcryptjs';
 
 export const login = async (req, res) => {
