@@ -69,7 +69,7 @@ export default function SignUp() {
               <Label value="Tên tài khoản" />
               <TextInput
                 type="text"
-                placeholder="Tên, email hoặc số điện thoại"
+                placeholder="Tên tài khoản"
                 id="username"
                 onChange={handleChange}
               />
@@ -78,7 +78,7 @@ export default function SignUp() {
               <Label value="Email" />
               <TextInput
                 type="text"
-                placeholder="example@gmail.com"
+                placeholder="Email (vd: example@gmail.com)"
                 id="email"
                 onChange={handleChange}
               />
