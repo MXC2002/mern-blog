@@ -3,12 +3,14 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
+import { loginInStart, loginInSuccess, loginInFailure } from "../redux/user/userSlice";
 
 export default function Login() {
 
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const { loading, error: errorMessage } = useSelector(state => state.user)
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
 
@@ -20,11 +22,10 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.password || !formData.email) {
-      return setErrorMessage('Vui lòng điền vào tất cả các trường')
+      return dispatch(loginInFailure('Vui lòng điền vào tất cả các trường'))
     }
     try {
-      setLoading(true);
-      setErrorMessage(null)
+      dispatch(loginInStart());
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -35,15 +36,15 @@ export default function Login() {
       // eslint-disable-next-line no-unused-vars
       const data = await res.json();
       if (data.success === false) {
-        return setErrorMessage(data.message)
+        return dispatch(loginInFailure(data.message))
       }
-      setLoading(false)
+      
       if (res.ok) {
+        dispatch(loginInSuccess(data))
         navigate('/')
       }
     } catch (error) {
-      setErrorMessage(error.message)
-      setLoading(false)
+      dispatch(loginInFailure(error.message))
     }
   }
 
@@ -70,7 +71,7 @@ export default function Login() {
             <div>
               <Label value="Email" />
               <TextInput
-                type="text"
+                type="email"
                 placeholder="Email (vd: example@gmail.com)"
                 id="email"
                 onChange={handleChange}
@@ -104,7 +105,7 @@ export default function Login() {
           </div>
           {
             errorMessage && (
-              <Alert className="mt-5" color='failure'>
+              <Alert className="mt-5 absolute" color='failure'>
                 {errorMessage}
               </Alert>
             )
