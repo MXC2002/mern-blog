@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { loginInStart, loginInSuccess, loginInFailure } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 export default function Login() {
 
@@ -66,7 +67,7 @@ export default function Login() {
         </div>
 
         {/* right */}
-        <div className="flex-1">
+        <div className="flex-1 relative">
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div>
               <Label value="Email" />
@@ -96,6 +97,7 @@ export default function Login() {
                 ) : 'Đăng nhập'
               }
             </Button>
+            <OAuth />
           </form>
           <div className="flex gap-2 text-sm mt-3">
             <span>Bạn chưa có tài khoản ?</span>
@@ -105,7 +107,7 @@ export default function Login() {
           </div>
           {
             errorMessage && (
-              <Alert className="mt-5 absolute" color='failure'>
+              <Alert className="mt-5 absolute inset-x-0 items-center" color='failure'>
                 {errorMessage}
               </Alert>
             )
