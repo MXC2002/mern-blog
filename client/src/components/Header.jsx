@@ -4,6 +4,7 @@ import { AiOutlineSearch } from 'react-icons/ai'
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleTheme } from '../redux/theme/themeSlice'
+import { logoutSuccess } from '../redux/user/userSlice';
 
 export default function Header() {
 
@@ -11,6 +12,23 @@ export default function Header() {
     const { currentUser } = useSelector(state => state.user)
     const dispatch = useDispatch()
     const { theme } = useSelector(state => state.theme)
+
+    const handleLogout = async () => {
+        try {
+            const res = await fetch('/api/user/logout', {
+                method: 'POST',
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+            } else {
+                dispatch(logoutSuccess());
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
     return (
         <Navbar className="border-b-2">
             <Link to="/"
@@ -21,7 +39,7 @@ export default function Header() {
             <form>
                 <TextInput
                     type="text"
-                    placeholder="Search..."
+                    placeholder="Tìm kiếm..."
                     rightIcon={AiOutlineSearch}
                     className="hidden lg:inline"
                 />
@@ -54,13 +72,13 @@ export default function Header() {
                             <Dropdown.Item>Hồ sơ</Dropdown.Item>
                         </Link>
                         <Dropdown.Divider />
-                        <Dropdown.Item>Đăng xuất</Dropdown.Item>
+                        <Dropdown.Item onClick={handleLogout}>Đăng xuất</Dropdown.Item>
                     </Dropdown>
                 ) : (
 
                     <Link to="/login">
                         <Button gradientDuoTone="purpleToBlue" outline>
-                            Login
+                            Đăng nhập
                         </Button>
                     </Link>
                 )
@@ -81,13 +99,13 @@ export default function Header() {
 
                 {/* phần sửa mới: */}
                 <Navbar.Link as={Link} to='/' active={path === '/'} className="text-base">
-                    Home
+                    Trang Chủ
                 </Navbar.Link>
                 <Navbar.Link as={Link} to='/about' active={path === '/about'} className="text-base">
-                    About
+                    Giới Thiệu
                 </Navbar.Link>
                 <Navbar.Link as={Link} to='/projects' active={path === '/projects'} className="text-base">
-                    Projects
+                    Bài Viết
                 </Navbar.Link>
 
             </Navbar.Collapse>

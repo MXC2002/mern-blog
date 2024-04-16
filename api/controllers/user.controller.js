@@ -55,3 +55,11 @@ export const deleteUser = async (req, res, next) => {
         next(error);
     }
 }
+
+export const logout = (req, res, next) => {
+    try {
+        res.clearCookie('access_token').status(200).json('Người dùng đã được đăng xuất');
+    } catch (error) {
+        next(error);
+    }
+}
