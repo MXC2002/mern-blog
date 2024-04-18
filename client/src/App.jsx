@@ -5,10 +5,12 @@ import About from './pages/About'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
-import Projects from './pages/Projects'
+import Articles from './pages/Articles'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import PrivateRoute from './components/PrivateRoute'
+import OnlyAdminPrivateRoute from './components/OnlyAdminPrivateRoute'
+import CreateArticle from './pages/CreateArticle'
 
 
 export default function App() {
@@ -23,7 +25,10 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path='/dashboard' element={<Dashboard />} />
         </Route>
-        <Route path='/projects' element={<Projects />} />
+        <Route element={<OnlyAdminPrivateRoute />}>
+          <Route path='/create-article' element={<CreateArticle />} />
+        </Route>
+        <Route path='/articles' element={<Articles />} />
       </Routes>
       <Footer />
     </BrowserRouter>
