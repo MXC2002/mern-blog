@@ -5,12 +5,12 @@ import About from './pages/About'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
-import Articles from './pages/Articles'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import PrivateRoute from './components/PrivateRoute'
 import OnlyAdminPrivateRoute from './components/OnlyAdminPrivateRoute'
-import CreateArticle from './pages/CreateArticle'
+import CreatePost from './pages/CreatePost'
+import Posts from './pages/Posts'
 
 
 export default function App() {
@@ -26,9 +26,9 @@ export default function App() {
           <Route path='/dashboard' element={<Dashboard />} />
         </Route>
         <Route element={<OnlyAdminPrivateRoute />}>
-          <Route path='/create-article' element={<CreateArticle />} />
+          <Route path='/create-post' element={<CreatePost />} />
         </Route>
-        <Route path='/articles' element={<Articles />} />
+        <Route path='/posts' element={<Posts />} />
       </Routes>
       <Footer />
     </BrowserRouter>

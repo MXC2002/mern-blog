@@ -104,7 +104,7 @@ export default function Header() {
                 <Navbar.Link as={Link} to='/about' active={path === '/about'} className="text-base">
                     Giới Thiệu
                 </Navbar.Link>
-                <Navbar.Link as={Link} to='/articles' active={path === '/articles'} className="text-base">
+                <Navbar.Link as={Link} to='/posts' active={path === '/posts'} className="text-base">
                     Bài Viết
                 </Navbar.Link>
 

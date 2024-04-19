@@ -2,7 +2,7 @@ import { Button, FileInput, Select, TextInput } from 'flowbite-react'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-export default function CreateArticle() {
+export default function CreatePost() {
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
         <h1 className="text-center text-3xl my-7 font-semibold">Tạo bài viết</h1>
