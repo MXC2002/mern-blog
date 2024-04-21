@@ -72,7 +72,7 @@ export default function DashProfile() {
       },
       // eslint-disable-next-line no-unused-vars
       (error) => {
-        setImageFileUploadError('Không thể tải lên hình ảnh (Tập tin phải nhỏ hơn 2 MB)');
+        setImageFileUploadError('Không thể tải hình ảnh lên (Tập tin phải nhỏ hơn 2 MB)');
         setImageFileUploadProgress(null);
         setImageFile(null);
         setImageFileUrl(null);
