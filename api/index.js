@@ -8,11 +8,6 @@ import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
-const app = express();
-
-app.use(express.json());
-app.use(cookieParser());
-
 // Connect to db
 mongoose.connect(process.env.MONGODB)
     .then(() => {
@@ -23,6 +18,13 @@ mongoose.connect(process.env.MONGODB)
     .catch((err) => {
         console.log(err);
     })
+
+
+const app = express();
+
+app.use(express.json());
+app.use(cookieParser());
+
 
 
 // Routes
