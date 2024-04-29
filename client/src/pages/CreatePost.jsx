@@ -80,6 +80,24 @@ export default function CreatePost() {
         }
     };
 
+    //custom toolbar react quill
+    const modules = {
+        toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['link', 'image'], [{ 'code-block': true }],
+            ['clean'],
+        ],
+    };
+
+    const formats = [
+        'header',
+        'bold', 'italic', 'underline', 'strike', 'blockquote',
+        'list',
+        'link', 'image', 'code-block',
+    ];
+
     return (
         <div className="p-3 max-w-3xl mx-auto min-h-screen">
             <h1 className="text-center text-3xl my-7 font-semibold">Tạo bài viết</h1>
@@ -88,14 +106,14 @@ export default function CreatePost() {
                     <TextInput type='text' placeholder='Tiêu đề' required id='title' className='flex-1' onChange={(e) =>
                         setFormData({ ...formData, title: e.target.value })
                     } />
-                    <Select onChange={(e) => setFormData({
-                        ...formData,
-                        category: e.target.value
-                    })}>
+                    <Select onChange={(e) =>
+                        setFormData({ ...formData, category: e.target.value })
+                    }>
                         <option value="uncategorized">--Chọn danh mục--</option>
                         <option value="javascript">Javascript</option>
                         <option value="nodejs">NodeJS</option>
                         <option value="reactjs">ReactJS</option>
+                        <option value="other">Other</option>
                     </Select>
                 </div>
                 <div className='flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3'>
@@ -125,7 +143,8 @@ export default function CreatePost() {
                 <ReactQuill theme='snow' placeholder='Viết nội dung...' className='h-72 mb-12' required onChange={(value) => setFormData({
                     ...formData,
                     content: value
-                })} />
+                })} modules={modules}
+                    formats={formats} />
                 <Button type='submit' gradientDuoTone='purpleToPink'>
                     Đăng bài
                 </Button>
