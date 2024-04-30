@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react"
 import { useSelector } from 'react-redux'
-import { Table } from 'flowbite-react'
+import { Button, Modal, Table } from 'flowbite-react'
 import { Link } from 'react-router-dom'
-import { HiOutlineTrash, HiPencilAlt } from 'react-icons/hi';
+import { HiOutlineExclamationCircle, HiOutlineTrash, HiPencilAlt } from 'react-icons/hi';
 
 
 export default function DashPosts() {
   const { currentUser } = useSelector((state) => state.user)
   const [userPosts, setUserPosts] = useState([]);
   const [showMore, setShowMore] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [PostIdToDelete, setPostIdToDelete] = useState('');
 
   console.log(userPosts);
   useEffect(() => {
@@ -45,6 +47,23 @@ export default function DashPosts() {
     } catch (error) {
       console.log(error.message);
     }
+  };
+
+  const handleDeletePost = async () => {
+    setShowModal(false);
+    try {
+      const res = await fetch(`/api/post/deletepost/${PostIdToDelete}/${currentUser._id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        setUserPosts((prev) => prev.filter((post) => post._id !== PostIdToDelete))
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
   return (
@@ -76,7 +95,10 @@ export default function DashPosts() {
                   </Table.Cell>
                   <Table.Cell>{post.category}</Table.Cell>
                   <Table.Cell>
-                    <HiOutlineTrash className="text-red-500 cursor-pointer text-xl hover:scale-110" title="Xóa" />
+                    <HiOutlineTrash onClick={() => {
+                      setShowModal(true);
+                      setPostIdToDelete(post._id)
+                    }} className="text-red-500 cursor-pointer text-xl hover:scale-110" title="Xóa" />
                   </Table.Cell>
                   <Table.Cell>
                     <Link to={`/update-post/${post._id}`}>
@@ -98,6 +120,20 @@ export default function DashPosts() {
       ) : (
         <p>Chưa có bài viết nào</p>
       )}
+      <Modal show={showModal} onClose={() => setShowModal(false)} popup size='md'>
+        <Modal.Header />
+
+        <Modal.Body>
+          <div className='text-center'>
+            <HiOutlineExclamationCircle className='h-14 w-14 text-red-400 mb-4 mx-auto' />
+            <h3 className='mb-5 text-lg text-gray-600'>Bạn có chắc chắn muốn xóa bài viết này?</h3>
+            <div className='flex justify-evenly'>
+              <Button color='failure' onClick={handleDeletePost}>Chắc chắn</Button>
+              <Button color='gray' onClick={() => setShowModal(false)}>Hủy bỏ</Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   )
 }
