@@ -9,3 +9,30 @@ body {
 .ql-editor {
     font-size: 1.05rem;
 }
+ 
+.ql-toolbar.ql-snow .ql-picker-label {
+  color: inherit;
+}
+.ql-snow .ql-picker {
+  color: inherit;
+}
+.quill > .ql-container > .ql-editor.ql-blank::before {
+  /* for placeholder */
+  color: inherit;
+}
+
+.ql-snow.ql-toolbar button svg {
+  color: currentColor;
+}
+.ql-snow .ql-stroke {
+  /* for the border of the editor */
+  stroke: currentColor;
+}
+.ql-snow .ql-fill {
+  /* for the bg color */
+  fill: currentColor;
+}
+.ql-snow .ql-editor pre.ql-syntax {
+    background-color: #333;
+    color: #fff;
+}
