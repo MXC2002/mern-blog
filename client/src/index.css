@@ -32,6 +32,10 @@ body {
   /* for the bg color */
   fill: currentColor;
 }
+.ql-picker-item {
+  /* for dropdown */
+  color: #444;
+}
 .ql-snow .ql-editor pre.ql-syntax {
     background-color: #333;
     color: #fff;
