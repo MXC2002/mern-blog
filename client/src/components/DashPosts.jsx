@@ -28,7 +28,7 @@ export default function DashPosts() {
         console.log(error.message);
       }
     };
-    if (currentUser._id) {
+    if (currentUser.isAdmin) {
       fetchPosts()
     }
   }, [currentUser._id]);
