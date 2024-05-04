@@ -1,12 +1,15 @@
 import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react'
 import { useState } from 'react';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
+import ImageResize from 'quill-image-resize-module-react';
 import 'react-quill/dist/quill.snow.css';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
 import { app } from '../firebase'
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate } from 'react-router-dom'
+
+Quill.register('modules/imageResize', ImageResize);
 
 export default function CreatePost() {
     const [file, setFile] = useState(null)
@@ -90,6 +93,10 @@ export default function CreatePost() {
             ['link', 'image'], [{ 'code-block': true }],
             ['clean'],
         ],
+        imageResize: {
+            parchment: Quill.import('parchment'),
+            modules: ['Resize', 'DisplaySize']
+        }
     };
 
     const formats = [
@@ -142,7 +149,7 @@ export default function CreatePost() {
                         <img src={formData.image} alt="upload" className='w-full h-auto object-contain' />
                     )
                 }
-                <ReactQuill theme='snow' placeholder='Viết nội dung...' className='h-72 mb-12' required onChange={(value) => setFormData({
+                <ReactQuill theme='snow' placeholder='Viết nội dung...' className='h-auto mb-12' required onChange={(value) => setFormData({
                     ...formData,
                     content: value
                 })} modules={modules}

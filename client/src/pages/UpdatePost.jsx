@@ -1,6 +1,7 @@
 import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react'
 import { useEffect, useState } from 'react';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
+import ImageResize from 'quill-image-resize-module-react';
 import 'react-quill/dist/quill.snow.css';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
 import { app } from '../firebase'
@@ -8,6 +9,8 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+
+Quill.register('modules/imageResize', ImageResize);
 
 export default function UpdatePost() {
     const [file, setFile] = useState(null)
@@ -86,11 +89,11 @@ export default function UpdatePost() {
             const res = await fetch(`/api/post/updatepost/${formData._id}/${currentUser._id}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                  'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData)
-            })
-            const data = await res.json();
+                body: JSON.stringify(formData),
+              });
+              const data = await res.json();
             if (!res.ok) {
                 setPublishError(data.message);
                 return;
@@ -114,6 +117,10 @@ export default function UpdatePost() {
             ['link', 'image'], [{ 'code-block': true }],
             ['clean'],
         ],
+        imageResize: {
+            parchment: Quill.import('parchment'),
+            modules: ['Resize', 'DisplaySize']
+        }
     };
 
     const formats = [
@@ -131,7 +138,7 @@ export default function UpdatePost() {
                 <div className="flex flex-col gap-4 sm:flex-row justify-between">
                     <TextInput type='text' placeholder='Tiêu đề' required id='title' className='flex-1' onChange={(e) =>
                         setFormData({ ...formData, title: e.target.value })
-                    } value={formData.title || ''}/>
+                    } value={formData.title}/>
                     <Select onChange={(e) =>
                         setFormData({ ...formData, category: e.target.value })
                     } value={formData.category}>
@@ -166,7 +173,7 @@ export default function UpdatePost() {
                         <img src={formData.image} alt="upload" className='w-full h-auto object-contain' />
                     )
                 }
-                <ReactQuill theme='snow' placeholder='Viết nội dung...' className='h-72 mb-12' required onChange={(value) => setFormData({
+                <ReactQuill theme='snow' placeholder='Viết nội dung...' className='h-auto mb-12' required onChange={(value) => setFormData({
                     ...formData,
                     content: value
                 })} modules={modules}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSelector } from 'react-redux'
-import { Button, Modal, Table } from 'flowbite-react'
+import { Button, Modal, Spinner, Table } from 'flowbite-react'
 import { HiCheckCircle, HiOutlineExclamationCircle, HiOutlineTrash, HiXCircle } from 'react-icons/hi';
 
 
@@ -10,20 +10,23 @@ export default function DashUsers() {
     const [showMore, setShowMore] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [userIdToDelete, setUserIdToDelete] = useState('');
+    const [loading, setLoading] = useState(true);
 
-    console.log(users);
     useEffect(() => {
         const fetchUsers = async () => {
             try {
+                setLoading(true);
                 const res = await fetch(`/api/user/getusers`)
                 const data = await res.json()
                 if (res.ok) {
-                    setUsers(data.users)
+                    setLoading(false);
+                    setUsers(data.users);
                     if (data.users.length < 8) {
                         setShowMore(false)
                     }
                 }
             } catch (error) {
+                setLoading(false);
                 console.log(error.message);
             }
         };
@@ -51,7 +54,7 @@ export default function DashUsers() {
     const handleDeleteUser = async () => {
         setShowModal(false);
         try {
-            const res = await fetch(`/api/user/deleteuser/${userIdToDelete}/${currentUser._id}`, {
+            const res = await fetch(`/api/user/delete/${userIdToDelete}`, {
                 method: 'DELETE',
             });
             const data = await res.json();
@@ -63,6 +66,14 @@ export default function DashUsers() {
         } catch (error) {
             console.log(error.message);
         }
+    }
+
+    if (loading) {
+        return (
+            <div className='md:mx-auto flex justify-center items-center min-h-screen'>
+                <Spinner size='xl' />
+            </div>
+        )
     }
 
     return (

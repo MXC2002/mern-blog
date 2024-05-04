@@ -3,20 +3,22 @@
 @tailwind utilities;
 
 body {
-    height: 100vh;
+  height: 100vh;
 }
 
 .ql-editor {
-    font-size: 1.05rem;
+  font-size: 1.05rem;
 }
- 
+
 .ql-toolbar.ql-snow .ql-picker-label {
   color: inherit;
 }
+
 .ql-snow .ql-picker {
   color: inherit;
 }
-.quill > .ql-container > .ql-editor.ql-blank::before {
+
+.quill>.ql-container>.ql-editor.ql-blank::before {
   /* for placeholder */
   color: inherit;
 }
@@ -24,19 +26,97 @@ body {
 .ql-snow.ql-toolbar button svg {
   color: currentColor;
 }
+
 .ql-snow .ql-stroke {
   /* for the border of the editor */
   stroke: currentColor;
 }
+
 .ql-snow .ql-fill {
   /* for the bg color */
   fill: currentColor;
 }
+
 .ql-picker-item {
   /* for dropdown */
   color: #444;
 }
+
 .ql-snow .ql-editor pre.ql-syntax {
-    background-color: #333;
-    color: #fff;
+  background-color: #333;
+  color: #fff;
+}
+
+.post-content p {
+  margin: 0.2rem 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.post-content h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: sans-serif;
+  margin: 1.5rem 0 0;
+}
+
+.post-content h2 {
+  font-size: 1.4rem;
+  font-family: sans-serif;
+  margin: 1.5rem 0 0;
+}
+
+.post-content h3 {
+  font-size: 1.3rem;
+  font-family: sans-serif;
+  margin: 1.5rem 0 0;
+}
+
+.post-content a {
+  color: rgb(1, 77, 248);
+  text-decoration: none;
+}
+
+.dark .post-content a {
+  color: rgb(10, 150, 248);
+  text-decoration: none;
+}
+
+.dark .post-content a:hover {
+  color: rgb(1, 77, 248);
+  text-decoration: none;
+}
+
+.post-content a:hover{
+  color: rgb(10, 150, 248);
+  text-decoration: underline;
+}
+
+.post-content pre.ql-syntax {
+  padding: 5px 10px;
+  background-color: #333;
+  color: #fff;
+}
+
+.post-content .ql-align-center {
+  text-align: center;
+}
+
+.post-content .ql-align-right {
+  text-align: right;
+}
+
+.post-content .ql-align-justify {
+  text-align: justify;
+}
+
+.post-content ul {
+  list-style: normal;
+  padding-left: 3rem;
+  font-size: 1.05rem;
+}
+
+.post-content ol {
+  list-style: normal;
+  padding-left: 3rem;
+  font-size: 1.05rem;
 }

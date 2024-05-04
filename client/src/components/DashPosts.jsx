@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSelector } from 'react-redux'
-import { Button, Modal, Table } from 'flowbite-react'
+import { Button, Modal, Spinner, Table } from 'flowbite-react'
 import { Link } from 'react-router-dom'
 import { HiOutlineExclamationCircle, HiOutlineTrash, HiPencilAlt } from 'react-icons/hi';
 
@@ -11,20 +11,24 @@ export default function DashPosts() {
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [PostIdToDelete, setPostIdToDelete] = useState('');
+  const [loading, setLoading] = useState(true);
 
   console.log(userPosts);
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        setLoading(true)
         const res = await fetch(`/api/post/getposts?userId=${currentUser._id}`)
         const data = await res.json()
         if (res.ok) {
+          setLoading(false);
           setUserPosts(data.posts)
           if (data.posts.length < 8) {
             setShowMore(false)
           }
         }
       } catch (error) {
+        setLoading(false);
         console.log(error.message);
       }
     };
@@ -64,6 +68,14 @@ export default function DashPosts() {
     } catch (error) {
       console.log(error.message);
     }
+  }
+
+  if (loading) {
+    return ( 
+      <div className='md:mx-auto flex justify-center items-center min-h-screen'>
+        <Spinner size='xl' />
+      </div>
+    )
   }
 
   return (

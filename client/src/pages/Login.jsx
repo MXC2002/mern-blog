@@ -18,6 +18,8 @@ export default function Login() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+
+    dispatch(loginInFailure(null))
   };
 
   const handleSubmit = async (e) => {

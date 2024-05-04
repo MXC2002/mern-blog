@@ -14,6 +14,8 @@ export default function SignUp() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+
+    setErrorMessage(null)
   };
 
   const handleSubmit = async (e) => {
