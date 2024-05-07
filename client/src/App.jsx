@@ -13,11 +13,13 @@ import CreatePost from './pages/CreatePost'
 import Posts from './pages/Posts'
 import UpdatePost from './pages/UpdatePost'
 import PostDetail from './pages/PostDetail'
+import ScrollToTop from './components/ScrollToTop'
 
 
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Header />
       <Routes>
         <Route path='/' element={<Home />} />

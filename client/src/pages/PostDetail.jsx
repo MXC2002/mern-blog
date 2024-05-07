@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button, Spinner } from 'flowbite-react';
+import CommentSection from '../components/CommentSection';
 
 export default function PostDetail() {
     const { postSlug } = useParams();
@@ -20,7 +21,7 @@ export default function PostDetail() {
                 }
                 if (res.ok && data.posts.length > 0) {
                     const fetchedPost = data.posts[0];
-                    fetchedPost.readingTime = (fetchedPost.content.length / 250).toFixed(0);
+                    fetchedPost.readingTime = (fetchedPost.content.length / 1000).toFixed(0);
                     fetchedPost.dateString = new Date(fetchedPost.createdAt).toLocaleDateString();
                     setPost(fetchedPost);
                     setLoading(false);
@@ -47,10 +48,12 @@ export default function PostDetail() {
             </Link>
             <img src={post.image} alt={post.title} className='mt-10 p-3 max-h-[600px] w-full object-cover'/>
             <div className='flex justify-between p-3 border-b border-slate-500 mx-auto w-full max-w-2xl text-sm'>
-                <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-                <span className='italic'>{(post.content.length / 250).toFixed(0)} phút để đọc</span>
+                <span>{post.dateString}</span>
+                <span className='italic'>{post.readingTime} phút để đọc</span>
             </div>
             <div className='p-3 max-w-2xl mx-auto w-full post-content' dangerouslySetInnerHTML={{__html: post.content}}></div>
+
+            <CommentSection postId={post._id} />
         </div>
 
     ) : (
