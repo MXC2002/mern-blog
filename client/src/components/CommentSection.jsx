@@ -37,7 +37,7 @@ export default function CommentSection({postId}) {
             if (res.ok) {
                 setComment('')
                 setCommentError(null);
-                setComments(data, ...comments);
+                setComments([data, ...comments]);
             }
         } catch (error) {
             setCommentError(error.message);
