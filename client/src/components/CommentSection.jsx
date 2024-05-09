@@ -1,15 +1,16 @@
 import { Alert, Button, Textarea } from 'flowbite-react'
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Comment from './Comment';
 
 // eslint-disable-next-line react/prop-types
-export default function CommentSection({postId}) {
+export default function CommentSection({ postId }) {
     const { currentUser } = useSelector(state => state.user);
     const [comment, setComment] = useState('');
     const [commentError, setCommentError] = useState(null);
     const [comments, setComments] = useState([]);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -34,11 +35,9 @@ export default function CommentSection({postId}) {
                 setCommentError(data.message);
                 return;
             }
-            if (res.ok) {
-                setComment('')
-                setCommentError(null);
-                setComments([data, ...comments]);
-            }
+            setComment('')
+            setCommentError(null);
+            setComments([data, ...comments]);
         } catch (error) {
             setCommentError(error.message);
         }
@@ -54,15 +53,40 @@ export default function CommentSection({postId}) {
                     console.log(data.message);
                     return;
                 }
-                if (res.ok) {
-                    setComments(data);
-                }
+
+                setComments(data);
+
             } catch (error) {
                 console.log(error.message);
             }
         };
         getComments();
     }, [postId]);
+
+    const handleLike = async (commentId) => {
+        try {
+            if (!currentUser) {
+                navigate('/login');
+                return;
+            }
+            const res = await fetch(`/api/comment/likecomment/${commentId}`, {
+                method: 'PUT',
+            })
+            const data = await res.json();
+            if (res.ok) {
+                setComments(comments.map((comment) => {
+                    return comment._id === commentId ? {
+                        ...comment,
+                        likes: data.likes,
+                        numberOfLikes: data.likes.length
+                    } : comment
+                }
+                ));
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
 
     return (
         <div className='max-w-2xl mx-auto w-full p-3 border-t'>
@@ -84,12 +108,12 @@ export default function CommentSection({postId}) {
             )}
             {currentUser && (
                 <form onSubmit={handleSubmit} className='border border-teal-500 rounded-md p-3'>
-                    <Textarea placeholder='Viết bình luận' rows='3' maxLength='200' 
-                    onChange={(e) => {
-                        setComment(e.target.value),
-                        setCommentError(null)
-                    }} 
-                    value={comment}/>
+                    <Textarea placeholder='Viết bình luận' rows='3' maxLength='200'
+                        onChange={(e) => {
+                            setComment(e.target.value),
+                                setCommentError(null)
+                        }}
+                        value={comment} />
                     <div className='flex justify-between items-center mt-5'>
                         <p className='text-gray-500 text-sm'>Còn lại {200 - comment.length} ký tự</p>
                         <Button type='submit' outline gradientDuoTone='purpleToBlue'>
@@ -103,26 +127,26 @@ export default function CommentSection({postId}) {
                     }
                 </form>
             )}
-           {
-            comments.length === 0 ? (
-                <div className='text-gray-500 my-5 flex justify-center'>Chưa có bình luận nào.</div>
-            ) : (
-                <>
-                    <div className='my-5 flex items-center gap-1'>
-                        <p>Số bình luận:</p>
-                        <div className='border border-gray-400 py-1 px-2 rounded-md'>
-                            <p>{comments.length}</p>
+            {
+                comments.length === 0 ? (
+                    <div className='text-gray-500 my-5 flex justify-center'>Chưa có bình luận nào.</div>
+                ) : (
+                    <>
+                        <div className='my-5 flex items-center gap-1'>
+                            <p>Số bình luận:</p>
+                            <div className='border border-gray-400 py-1 px-2 rounded-md'>
+                                <p>{comments.length}</p>
+                            </div>
                         </div>
-                    </div>
-                    {
-                        comments.map(comment => (
-                            <Comment key={comment._id} 
-                            comment={comment} />
-                        ))
-                    }
-                </>
-            )
-           }
+                        {
+                            comments.map((comment) => (
+                                <Comment key={comment._id}
+                                    comment={comment} onLike={handleLike} />
+                            ))
+                        }
+                    </>
+                )
+            }
         </div>
     )
 }
