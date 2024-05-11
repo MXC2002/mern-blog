@@ -10,11 +10,11 @@ import { useSelector } from 'react-redux'
 moment.locale('vi');
 
 
-export default function Comment({ comment, onLike }) {
+export default function Comment({ comment, onLike, onEdit }) {
     const [user, setUser] = useState({});
-    const [reply, setReply] = useState(false);
-    const [replyContent, setReplyContent] = useState('');
-    const {currentUser} = useSelector(state => state.user)
+    const { currentUser } = useSelector(state => state.user)
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedContent, setEditedContent] = useState(comment.content);
 
     useEffect(() => {
         const getUser = async () => {
@@ -35,6 +35,39 @@ export default function Comment({ comment, onLike }) {
         }
         getUser();
     }, [comment]);
+
+    const handleEdit = () => {
+        setIsEditing(true);
+        setEditedContent(comment.content);
+    };
+
+    const handleSave = async () => {
+        try {
+            const res = await fetch(`/api/comment/editcomment/${comment._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    content: editedContent
+                })
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+                return;
+            }
+            setIsEditing(false);
+            onEdit(comment, editedContent);
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+
+    const handleDelete = () => {
+
+    };
+
     return (
         <div className="flex p-4 border-b dark:border-gray-600 text-sm">
             <div className="flex-shrink-0 mr-3">
@@ -49,47 +82,64 @@ export default function Comment({ comment, onLike }) {
                         {moment(comment.createdAt).fromNow()}
                     </span>
                 </div>
-                <p className="text-gray-600 pb-2 ml-2">{comment.content}</p>
+                {isEditing ? (
+                    <>
+                        <Textarea
+                            className="mb-2"
+                            value={editedContent}
+                            onChange={(e) => setEditedContent(e.target.value)}
+                        />
+                        <div className="flex justify-end gap-2 text-xs">
+                            <Button type="button" outline gradientDuoTone="purpleToBlue" size="sm" onClick={() => {
+                                setIsEditing(false);
+                            }}>
+                                Hủy
+                            </Button>
+                            <Button type="button" gradientDuoTone="purpleToBlue" size="sm" onClick={handleSave} >
+                                Lưu
+                            </Button>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <p className="text-gray-600 pb-2 ml-2">{comment.content}</p>
 
-                <div className="ml-2 mt-1 flex gap-2 items-center pt-2 text-xs border-t dark:border-gray-700 max-w-fit">
-                    <button type="button" onClick={() => onLike(comment._id)} className={`text-gray-400 hover:text-blue-500 ${
-                        currentUser && comment.likes.includes(currentUser._id) && '!text-blue-500'
-                    }`}>
-                        <FaThumbsUp className="text-sm"/>
-                    </button>
-                    <p className="text-gray-400">
-                        {
-                            comment.numberOfLikes > 0 && comment.numberOfLikes + " " + (comment.numberOfLikes  === 1 ? 'like' : 'likes')
-                        }
-                    </p>
-                </div>
+                        <div className="ml-2 mt-1 flex gap-2 items-center pt-2 text-xs border-t dark:border-gray-800 max-w-fit">
+                            <button type="button" onClick={() => onLike(comment._id)} className={`text-gray-400 hover:text-blue-500 ${currentUser && comment.likes.includes(currentUser._id) && '!text-blue-500'
+                                }`}>
+                                <FaThumbsUp className="text-sm" />
+                            </button>
 
-                {/* Reply */}
-                <div className="mt-2 ml-2">
-                    <FaReply onClick={() => setReply(true)} className="text-gray-400 hover:text-gray-500" />
-                </div>
-                {
-                    reply ? (
-                        <form className='mt-2 ml-2 border border-teal-500 rounded-md p-3'>
-                            <Textarea placeholder='Viết bình luận' rows='2' maxLength='200'
-                                onChange={(e) => setReplyContent(e.target.value)}
-                                value={replyContent} />
-                            <div className='md:flex justify-between items-center mt-2'>
-                                <p className='text-gray-500 text-sm'>Còn lại {200 - replyContent.length} ký tự</p>
-                                <div className="flex gap-3 justify-end mt-2">
-                                    <Button onClick={() => setReply(false)} type='submit' outline gradientDuoTone='purpleToPink'>
-                                        Hủy bỏ
-                                    </Button>
-                                    <Button type='submit' outline gradientDuoTone='purpleToBlue'>
-                                        Bình luận
-                                    </Button>
-                                </div>
-                            </div>
+                            {
+                                comment.numberOfLikes > 0 &&
+                                <p className="text-gray-400">
+                                    {
+                                        comment.numberOfLikes + " " + (comment.numberOfLikes === 1 ? 'like' : 'likes')
+                                    }
+                                </p>
 
-                        </form>
-                    ) : null
-                }
-                {/* end reply */}
+                            }
+
+                            {
+                                currentUser && (currentUser._id === comment.userId && (
+                                    <>
+                                        <button type="button" className="text-gray-400 hover:text-blue-500 border-l dark:border-gray-800 pl-2" onClick={handleEdit}>
+                                            Sửa
+                                        </button>
+                                        <button type="button" className="text-gray-400 hover:text-red-400 border-l dark:border-gray-800 pl-2">
+                                            Xóa
+                                        </button>
+                                    </>
+                                )) || currentUser.isAdmin && (
+                                    <button type="button" className="text-gray-400 hover:text-red-400 border-l dark:border-gray-800 pl-2">
+                                            Xóa
+                                        </button>
+                                )                           
+                            }
+                        </div>
+                    </>
+                )}
+
             </div>
         </div>
     )

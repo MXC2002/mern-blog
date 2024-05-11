@@ -1,5 +1,5 @@
 
-
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from 'react';
@@ -13,7 +13,11 @@ export default function Login() {
   const { loading, error: errorMessage } = useSelector(state => state.user)
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
 
   const handleChange = (e) => {
@@ -41,7 +45,7 @@ export default function Login() {
       if (data.success === false) {
         return dispatch(loginInFailure(data.message))
       }
-      
+
       if (res.ok) {
         dispatch(loginInSuccess(data))
         navigate('/')
@@ -80,14 +84,30 @@ export default function Login() {
                 onChange={handleChange}
               />
             </div>
-            <div>
+            <div className="relative">
               <Label value="Mật khẩu" />
               <TextInput
-                type='password'
+                type={showPassword ? 'text' : 'password'}
                 placeholder="Mật khẩu"
                 id="password"
                 onChange={handleChange}
               />
+              {formData.password && (
+                <div className="absolute md:bottom-2.5 bottom-2 right-3">
+                  {showPassword ? (
+                    <FiEye
+                      onClick={handleShowPassword}
+                      className="cursor-pointer text-2xl md:text-lg"
+
+                    />
+                  ) : (
+                    <FiEyeOff
+                      onClick={handleShowPassword}
+                      className="cursor-pointer text-2xl md:text-lg"
+                    />
+                  )}
+                </div>
+              )}
             </div>
             <Button gradientDuoTone='purpleToBlue' type="submit" disabled={loading}>
               {
