@@ -1,7 +1,6 @@
 import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react'
 import { useState } from 'react';
-import ReactQuill, { Quill } from 'react-quill';
-import ImageResize from 'quill-image-resize-module-react';
+import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
 import { app } from '../firebase'
@@ -9,7 +8,6 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate } from 'react-router-dom'
 
-Quill.register('modules/imageResize', ImageResize);
 
 export default function CreatePost() {
     const [file, setFile] = useState(null)
@@ -88,21 +86,15 @@ export default function CreatePost() {
         toolbar: [
             [{ 'header': [1, 2, 3, false] }],
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
             [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
             ['link', 'image'], [{ 'code-block': true }],
             ['clean'],
-        ],
-        imageResize: {
-            parchment: Quill.import('parchment'),
-            modules: ['Resize', 'DisplaySize']
-        }
+        ]
     };
 
     const formats = [
         'header',
         'bold', 'italic', 'underline', 'strike', 'blockquote',
-        'list',
         'align',
         'link', 'image', 'code-block',
     ];

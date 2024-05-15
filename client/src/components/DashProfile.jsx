@@ -90,6 +90,9 @@ export default function DashProfile() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
+    dispatch(updateFailure(null));
+    setUpdateUserError(null);
+    setUpdateUserSuccess(null);
   };
 
   const handleSubmit = async (e) => {
@@ -124,7 +127,6 @@ export default function DashProfile() {
       } else {
         dispatch(updateSuccess(data));
         setUpdateUserSuccess('Hồ sơ người dùng được cập nhật thành công');
-
       }
     } catch (error) {
       dispatch(updateFailure(error.message));

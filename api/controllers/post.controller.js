@@ -86,6 +86,9 @@ export const updatepost = async (req, res, next) => {
         return next(errorHandler(403, 'Bạn không được phép cập nhật bài viết này'));
     }
     try {
+        if (!req.body.title) {
+            return next(errorHandler(400, 'Tiêu đề không được bỏ trống'));
+        } 
         const latinTitle = unidecode(req.body.title);
         const newSlug = latinTitle.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
         const updatedPost = await Post.findByIdAndUpdate(

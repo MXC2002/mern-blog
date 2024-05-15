@@ -1,4 +1,4 @@
-
+import bcryptjs from 'bcryptjs';
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 
@@ -14,7 +14,7 @@ export const updateUser = async (req, res, next) => {
         if (req.body.password.length < 6) {
             return next(errorHandler(400, 'Mật khẩu phải có ít nhất 6 ký tự'));
         }
-        req.body.password = bcrypt.hashSync(req.body.password, 10);
+        req.body.password = bcryptjs.hashSync(req.body.password, 10);
     }
     if (req.body.username) {
 

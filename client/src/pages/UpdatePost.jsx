@@ -1,7 +1,6 @@
 import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react'
 import { useEffect, useState } from 'react';
-import ReactQuill, { Quill } from 'react-quill';
-import ImageResize from 'quill-image-resize-module-react';
+import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
 import { app } from '../firebase'
@@ -10,7 +9,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-Quill.register('modules/imageResize', ImageResize);
+
 
 export default function UpdatePost() {
     const [file, setFile] = useState(null)
@@ -24,7 +23,7 @@ export default function UpdatePost() {
 
     useEffect(() => {
         try {
-            const fetchPosts = async () => {
+            const fetchPost = async () => {
                 const res = await fetch(`/api/post/getposts?postId=${postId}`);
                 const data = await res.json();
                 if(!res.ok) {
@@ -37,7 +36,7 @@ export default function UpdatePost() {
                     setFormData(data.posts[0]);
                 }
             }
-            fetchPosts();
+            fetchPost();
         } catch (error) {
             console.log(error.message);
         }
@@ -86,7 +85,7 @@ export default function UpdatePost() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`/api/post/updatepost/${formData._id}/${currentUser._id}`, {
+            const res = await fetch(`/api/post/updatepost/${postId}/${currentUser._id}`, {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',
@@ -112,21 +111,15 @@ export default function UpdatePost() {
         toolbar: [
             [{ 'header': [1, 2, 3, false] }],
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
             [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
             ['link', 'image'], [{ 'code-block': true }],
             ['clean'],
-        ],
-        imageResize: {
-            parchment: Quill.import('parchment'),
-            modules: ['Resize', 'DisplaySize']
-        }
+        ]
     };
 
     const formats = [
         'header',
         'bold', 'italic', 'underline', 'strike', 'blockquote',
-        'list',
         'align',
         'link', 'image', 'code-block',
     ];
@@ -136,12 +129,12 @@ export default function UpdatePost() {
             <h1 className="text-center text-3xl my-7 font-semibold">Cập nhật bài viết</h1>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-4 sm:flex-row justify-between">
-                    <TextInput type='text' placeholder='Tiêu đề' required id='title' className='flex-1' onChange={(e) =>
+                    <TextInput type='text' placeholder='Tiêu đề' required id='title' className='flex-1' value={formData.title} onChange={(e) =>
                         setFormData({ ...formData, title: e.target.value })
-                    } value={formData.title}/>
-                    <Select onChange={(e) =>
+                    }/>
+                    <Select value={formData.category} onChange={(e) =>
                         setFormData({ ...formData, category: e.target.value })
-                    } value={formData.category}>
+                    }>
                         <option value="uncategorized">--Chọn danh mục--</option>
                         <option value="javascript">Javascript</option>
                         <option value="nodejs">NodeJS</option>
@@ -173,11 +166,11 @@ export default function UpdatePost() {
                         <img src={formData.image} alt="upload" className='w-full h-auto object-contain' />
                     )
                 }
-                <ReactQuill theme='snow' placeholder='Viết nội dung...' className='h-auto mb-12' required onChange={(value) => setFormData({
+                <ReactQuill theme='snow' value={formData.content} placeholder='Viết nội dung...' className='h-auto' required onChange={(value) => setFormData({
                     ...formData,
                     content: value
                 })} modules={modules}
-                    formats={formats} value={formData.content}/>
+                    formats={formats} />
                 <Button type='submit' gradientDuoTone='purpleToPink'>
                     Cập nhật
                 </Button>

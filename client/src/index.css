@@ -47,6 +47,12 @@ body {
   color: #fff;
 }
 
+.ql-snow .ql-editor img {
+  margin: 0 auto;
+  height: 22.5rem;
+  object-fit: scale-down;
+}
+
 .post-content p {
   margin: 0.2rem 0 0.5rem;
   font-size: 1.05rem;
@@ -119,4 +125,11 @@ body {
   list-style: normal;
   padding-left: 3rem;
   font-size: 1.05rem;
+}
+
+.post-content blockquote {
+  border-left: 4px solid #ccc;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding-left: 16px;
 }
