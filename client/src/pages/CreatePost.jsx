@@ -72,10 +72,9 @@ export default function CreatePost() {
                 setPublishError(data.message);
                 return;
             }
-            if (res.ok) {
-                setPublishError(null);
-                navigate(`/post/${data.slug}`);
-            }
+            setPublishError(null);
+            navigate(`/post/${data.slug}`);
+
         } catch (error) {
             setPublishError('Đã xảy ra lỗi');
         }
@@ -141,7 +140,7 @@ export default function CreatePost() {
                         <img src={formData.image} alt="upload" className='w-full h-auto object-contain' />
                     )
                 }
-                <ReactQuill theme='snow' placeholder='Viết nội dung...' className='h-auto mb-12' required onChange={(value) => setFormData({
+                <ReactQuill theme='snow' placeholder='Viết nội dung...' className='h-auto' required onChange={(value) => setFormData({
                     ...formData,
                     content: value
                 })} modules={modules}

@@ -19,22 +19,21 @@ export default function UpdatePost() {
     const [formData, setFormData] = useState({});
     const navigate = useNavigate();
     const { postId } = useParams();
-    const { currentUser} = useSelector((state) => state.user);
+    const { currentUser } = useSelector((state) => state.user);
 
     useEffect(() => {
         try {
             const fetchPost = async () => {
                 const res = await fetch(`/api/post/getposts?postId=${postId}`);
                 const data = await res.json();
-                if(!res.ok) {
+                if (!res.ok) {
                     console.log(data.message);
                     setPublishError(data.message);
                     return
                 }
-                if (res.ok) {
-                    setPublishError(null);
-                    setFormData(data.posts[0]);
-                }
+                setPublishError(null);
+                setFormData(data.posts[0]);
+
             }
             fetchPost();
         } catch (error) {
@@ -88,19 +87,18 @@ export default function UpdatePost() {
             const res = await fetch(`/api/post/updatepost/${postId}/${currentUser._id}`, {
                 method: 'PUT',
                 headers: {
-                  'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
-              });
-              const data = await res.json();
+            });
+            const data = await res.json();
             if (!res.ok) {
                 setPublishError(data.message);
                 return;
             }
-            if (res.ok) {
-                setPublishError(null);
-                navigate(`/post/${data.slug}`);
-            }
+            setPublishError(null);
+            navigate(`/post/${data.slug}`);
+
         } catch (error) {
             setPublishError('Đã xảy ra lỗi');
         }
@@ -131,7 +129,7 @@ export default function UpdatePost() {
                 <div className="flex flex-col gap-4 sm:flex-row justify-between">
                     <TextInput type='text' placeholder='Tiêu đề' required id='title' className='flex-1' value={formData.title} onChange={(e) =>
                         setFormData({ ...formData, title: e.target.value })
-                    }/>
+                    } />
                     <Select value={formData.category} onChange={(e) =>
                         setFormData({ ...formData, category: e.target.value })
                     }>

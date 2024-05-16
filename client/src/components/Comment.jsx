@@ -126,11 +126,11 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
                                             Xóa
                                         </button>
                                     </>
-                                )) || currentUser.isAdmin && (
+                                )) || ( currentUser?.isAdmin && (
                                     <button type="button" className="text-gray-400 hover:text-red-400 border-l dark:border-gray-800 pl-2" onClick={() => onDelete(comment._id)}>
-                                            Xóa
-                                        </button>
-                                )                           
+                                        Xóa
+                                    </button>
+                                ))                          
                             }
                         </div>
                     </>

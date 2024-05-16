@@ -6,10 +6,15 @@ export const create = async (req, res, next) => {
     if (!req.user.isAdmin) {
         return next(errorHandler(403, 'Bạn không được phép tạo bài viết'));
     }
-    if (!req.body.title || !req.body.content) {
+    if (!req.body.title && !req.body.content) {
         return next(errorHandler(400, 'Tất cả các trường là bắt buộc'));
     }
-
+    if (!req.body.title) {
+        return next(errorHandler(400, 'Tiêu đề không được bỏ trống'));
+    }
+    if (!req.body.content) {
+        return next(errorHandler(400, 'Nội dung không được bỏ trống'));
+    }
     const latinTitle = unidecode(req.body.title);
     const slug = latinTitle.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
     const newPost = new Post({
@@ -85,12 +90,20 @@ export const updatepost = async (req, res, next) => {
     if (!req.user.isAdmin || req.user.id !== req.params.userId) {
         return next(errorHandler(403, 'Bạn không được phép cập nhật bài viết này'));
     }
+    if (!req.body.title && !req.body.content) {
+        return next(errorHandler(400, 'Tất cả các trường là bắt buộc'));
+    }
+    if (!req.body.title) {
+        return next(errorHandler(400, 'Tiêu đề không được bỏ trống'));
+    }
+    if (!req.body.content) {
+        return next(errorHandler(400, 'Nội dung không được bỏ trống'));
+    }
+
+    const latinTitle = unidecode(req.body.title);
+    const newSlug = latinTitle.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    
     try {
-        if (!req.body.title) {
-            return next(errorHandler(400, 'Tiêu đề không được bỏ trống'));
-        } 
-        const latinTitle = unidecode(req.body.title);
-        const newSlug = latinTitle.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
         const updatedPost = await Post.findByIdAndUpdate(
             req.params.postId, {
             $set: {
