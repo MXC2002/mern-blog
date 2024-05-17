@@ -20,12 +20,12 @@ export default function DashPosts() {
         setLoading(true)
         const res = await fetch(`/api/post/getposts?userId=${currentUser._id}`)
         const data = await res.json()
-        if (res.ok) {
-          setLoading(false);
+        if (res.ok) { 
           setUserPosts(data.posts)
-          if (data.posts.length <= 8) {
+          if (data.posts.length < 8) {
             setShowMore(false)
           }
+          setLoading(false);
         }
       } catch (error) {
         setLoading(false);
@@ -44,7 +44,7 @@ export default function DashPosts() {
       const data = await res.json();
       if (res.ok) {
         setUserPosts((prev) => [...prev, ...data.posts])
-        if (data.posts.length <= 8) {
+        if (data.posts.length < 8) {
           setShowMore(false)
         }
       }
@@ -71,7 +71,7 @@ export default function DashPosts() {
   }
 
   if (loading) {
-    return ( 
+    return (
       <div className='md:mx-auto flex justify-center items-center min-h-screen'>
         <Spinner size='xl' />
       </div>
@@ -84,6 +84,7 @@ export default function DashPosts() {
         <>
           <Table hoverable className="shadow-sm">
             <Table.Head>
+              <Table.HeadCell>Ngày tạo</Table.HeadCell>
               <Table.HeadCell>Ngày cập nhật</Table.HeadCell>
               <Table.HeadCell>Hình ảnh</Table.HeadCell>
               <Table.HeadCell>Tiêu đề</Table.HeadCell>
@@ -94,6 +95,7 @@ export default function DashPosts() {
             {userPosts.map((post) => (
               <Table.Body key={post._id} className="divide-y">
                 <Table.Row className="bg-white dark:bg-gray-800">
+                  <Table.Cell>{new Date(post.createdAt).toLocaleDateString()}</Table.Cell>
                   <Table.Cell>{new Date(post.updatedAt).toLocaleDateString()}</Table.Cell>
                   <Table.Cell>
                     <Link to={`/post/${post.slug}`}>

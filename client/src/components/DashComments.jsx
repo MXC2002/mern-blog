@@ -1,29 +1,32 @@
+
 import { useEffect, useState } from "react"
 import { useSelector } from 'react-redux'
 import { Button, Modal, Spinner, Table } from 'flowbite-react'
-import { HiCheckCircle, HiOutlineExclamationCircle, HiOutlineTrash, HiXCircle } from 'react-icons/hi';
+import { HiOutlineExclamationCircle, HiOutlineTrash } from 'react-icons/hi';
 
 
-export default function DashUsers() {
+export default function DashComments() {
     const { currentUser } = useSelector((state) => state.user)
-    const [users, setUsers] = useState([]);
+    const [comments, setComments] = useState([]);
     const [showMore, setShowMore] = useState(true);
     const [showModal, setShowModal] = useState(false);
-    const [userIdToDelete, setUserIdToDelete] = useState('');
+    const [commentIdToDelete, setCommentIdToDelete] = useState('');
     const [loading, setLoading] = useState(true);
+    const [users, setUsers] = useState([]);
+    const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchComments = async () => {
             try {
                 setLoading(true);
-                const res = await fetch(`/api/user/getusers`)
+                const res = await fetch(`/api/comment/getcomments`)
                 const data = await res.json()
                 if (res.ok) {
-                    setLoading(false);
-                    setUsers(data.users);
-                    if (data.users.length < 8) {
+                    setComments(data.comments);
+                    if (data.comments.length < 8) {
                         setShowMore(false)
                     }
+                    setLoading(false);
                 }
             } catch (error) {
                 setLoading(false);
@@ -31,18 +34,62 @@ export default function DashUsers() {
             }
         };
         if (currentUser.isAdmin) {
-            fetchUsers()
+            fetchComments()
         }
     }, [currentUser._id]);
 
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const res = await fetch(`/api/user/getusers`)
+                const data = await res.json()
+                if (res.ok) {
+                    setUsers(data.users);
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        };
+        if (currentUser.isAdmin) {
+            fetchUsers()
+        }
+    }, []);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const res = await fetch(`/api/post/getposts`)
+                const data = await res.json()
+                if (res.ok) {
+                    setPosts(data.posts);
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        };
+        if (currentUser.isAdmin) {
+            fetchPosts()
+        }
+    }, []);
+
+    const findPostTitle = (postId) => {
+        const post = posts.find((post) => post._id === postId);
+        return post ? post.title : '';
+    };
+
+    const findUserName = (userId) => {
+        const user = users.find((user) => user._id === userId);
+        return user ? user.username : '';
+    };
+
     const handleShowMore = async () => {
-        const startIndex = users.length;
+        const startIndex = comments.length;
         try {
-            const res = await fetch(`/api/user/getusers?startIndex=${startIndex}`);
+            const res = await fetch(`/api/comment/getcomments?startIndex=${startIndex}`);
             const data = await res.json();
             if (res.ok) {
-                setUsers((prev) => [...prev, ...data.users])
-                if (data.users.length < 8) {
+                setComments((prev) => [...prev, ...data.comments])
+                if (data.comments.length < 8) {
                     setShowMore(false)
                 }
             }
@@ -51,17 +98,17 @@ export default function DashUsers() {
         }
     };
 
-    const handleDeleteUser = async () => {
+    const handleDeleteComment = async () => {
         setShowModal(false);
         try {
-            const res = await fetch(`/api/user/delete/${userIdToDelete}`, {
+            const res = await fetch(`/api/comment/deletecomment/${commentIdToDelete}`, {
                 method: 'DELETE',
             });
             const data = await res.json();
             if (!res.ok) {
                 console.log(data.message);
             } else {
-                setUsers((prev) => prev.filter((user) => user._id !== userIdToDelete))
+                setComments((prev) => prev.filter((comment) => comment._id !== commentIdToDelete))
             }
         } catch (error) {
             console.log(error.message);
@@ -78,54 +125,36 @@ export default function DashUsers() {
 
     return (
         <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-200 scrollbar-thumb-slate-400 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-400">
-            {currentUser.isAdmin && users.length > 0 ? (
+            {currentUser.isAdmin && comments.length > 0 ? (
                 <>
                     <Table hoverable className="shadow-sm">
-                        <Table.Head>
+                        <Table.Head className="text-center">
                             <Table.HeadCell>Ngày tạo</Table.HeadCell>
                             <Table.HeadCell>Ngày cập nhật</Table.HeadCell>
-                            <Table.HeadCell>Hình ảnh</Table.HeadCell>
+                            <Table.HeadCell>Nội dung bình luận</Table.HeadCell>
+                            <Table.HeadCell>Số lượt thích</Table.HeadCell>
+                            <Table.HeadCell>Tên bài viết</Table.HeadCell>
                             <Table.HeadCell>Tên người dùng</Table.HeadCell>
-                            <Table.HeadCell>Email</Table.HeadCell>
-                            <Table.HeadCell>Admin</Table.HeadCell>
                             <Table.HeadCell>Xóa</Table.HeadCell>
-                            {/* <Table.HeadCell>Sửa</Table.HeadCell> */}
                         </Table.Head>
-                        {users.map((user) => (
-                            <Table.Body key={user._id} className="divide-y">
+                        {comments.map((comment) => (
+                            <Table.Body key={comment._id} className="divide-y text-center">
                                 <Table.Row className="bg-white dark:bg-gray-800">
-                                    <Table.Cell>{new Date(user.createdAt).toLocaleDateString()}</Table.Cell>
-                                    <Table.Cell>{new Date(user.updatedAt).toLocaleDateString()}</Table.Cell>
+                                    <Table.Cell>{new Date(comment.createdAt).toLocaleDateString()}</Table.Cell>
+                                    <Table.Cell>{new Date(comment.updatedAt).toLocaleDateString()}</Table.Cell>
+                                    <Table.Cell>{comment.content}</Table.Cell>
                                     <Table.Cell>
-
-                                        <img src={user.profilePicture} alt={user.username} className="w-10 h-10 object-cover bg-gray-500 rounded-full" />
-
+                                        {comment.numberOfLikes}
                                     </Table.Cell>
-                                    <Table.Cell>
-                                        {user.username}
-                                    </Table.Cell>
-                                    <Table.Cell>{user.email}</Table.Cell>
-                                    <Table.Cell>
-                                        {
-                                            user.isAdmin ? (
-                                                <HiCheckCircle className="text-green-500 mx-auto" />
-
-                                            ) : (
-                                                <HiXCircle className="text-red-500 mx-auto" />
-                                            )
-                                        }
-                                    </Table.Cell>
+                                    <Table.Cell>{findPostTitle(comment.postId)}</Table.Cell>
+                                    <Table.Cell>{findUserName(comment.userId)}</Table.Cell>
                                     <Table.Cell>
                                         <HiOutlineTrash onClick={() => {
                                             setShowModal(true);
-                                            setUserIdToDelete(user._id)
+                                            setCommentIdToDelete(comment._id)
                                         }} className="text-red-500 cursor-pointer text-xl hover:scale-110" title="Xóa" />
                                     </Table.Cell>
-                                    {/* <Table.Cell>
-                    <Link to={`/update-post/${post._id}`}>
-                      <HiPencilAlt className="text-teal-500 cursor-pointer text-xl hover:scale-110" title="Sửa" />
-                    </Link>
-                  </Table.Cell> */}
+
                                 </Table.Row>
                             </Table.Body>
                         ))}
@@ -139,7 +168,7 @@ export default function DashUsers() {
                     }
                 </>
             ) : (
-                <p>Chưa có người dùng nào</p>
+                <p>Chưa có bình luận nào</p>
             )}
             <Modal show={showModal} onClose={() => setShowModal(false)} popup size='md'>
                 <Modal.Header />
@@ -147,9 +176,9 @@ export default function DashUsers() {
                 <Modal.Body>
                     <div className='text-center'>
                         <HiOutlineExclamationCircle className='h-14 w-14 text-red-400 mb-4 mx-auto' />
-                        <h3 className='mb-5 text-lg text-gray-600'>Bạn có chắc chắn muốn xóa người dùng này?</h3>
+                        <h3 className='mb-5 text-lg text-gray-600'>Bạn có chắc chắn muốn xóa bình luận này?</h3>
                         <div className='flex justify-evenly'>
-                            <Button color='failure' onClick={handleDeleteUser}>Chắc chắn</Button>
+                            <Button color='failure' onClick={handleDeleteComment}>Chắc chắn</Button>
                             <Button color='gray' onClick={() => setShowModal(false)}>Hủy bỏ</Button>
                         </div>
                     </div>
