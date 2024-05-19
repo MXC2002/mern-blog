@@ -33,12 +33,7 @@ export default function DashComments() {
                 console.log(error.message);
             }
         };
-        if (currentUser.isAdmin) {
-            fetchComments()
-        }
-    }, [currentUser._id]);
 
-    useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const res = await fetch(`/api/user/getusers`)
@@ -50,12 +45,7 @@ export default function DashComments() {
                 console.log(error.message);
             }
         };
-        if (currentUser.isAdmin) {
-            fetchUsers()
-        }
-    }, []);
 
-    useEffect(() => {
         const fetchPosts = async () => {
             try {
                 const res = await fetch(`/api/post/getposts`)
@@ -67,10 +57,13 @@ export default function DashComments() {
                 console.log(error.message);
             }
         };
+        
         if (currentUser.isAdmin) {
-            fetchPosts()
+            fetchComments();
+            fetchUsers();
+            fetchPosts();
         }
-    }, []);
+    }, [currentUser._id]);
 
     const findPostTitle = (postId) => {
         const post = posts.find((post) => post._id === postId);
