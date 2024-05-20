@@ -23,7 +23,7 @@ export default function DashComments() {
                 const data = await res.json()
                 if (res.ok) {
                     setComments(data.comments);
-                    if (data.comments.length < 8) {
+                    if (data.comments.length < 9) {
                         setShowMore(false)
                     }
                     setLoading(false);
@@ -82,7 +82,7 @@ export default function DashComments() {
             const data = await res.json();
             if (res.ok) {
                 setComments((prev) => [...prev, ...data.comments])
-                if (data.comments.length < 8) {
+                if (data.comments.length < 9) {
                     setShowMore(false)
                 }
             }
@@ -110,7 +110,7 @@ export default function DashComments() {
 
     if (loading) {
         return (
-            <div className='md:mx-auto flex justify-center items-center min-h-screen'>
+            <div className='md:mx-auto flex justify-center items-center min-h-96'>
                 <Spinner size='xl' />
             </div>
         )

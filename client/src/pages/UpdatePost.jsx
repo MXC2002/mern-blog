@@ -134,10 +134,12 @@ export default function UpdatePost() {
                         setFormData({ ...formData, category: e.target.value })
                     }>
                         <option value="uncategorized">--Chọn danh mục--</option>
-                        <option value="javascript">Javascript</option>
-                        <option value="nodejs">NodeJS</option>
-                        <option value="reactjs">ReactJS</option>
-                        <option value="other">Other</option>
+                        <option value="Front-End">Front-End</option>
+                        <option value="Back-End">Back-End</option>
+                        <option value="Full-Stack">Full-Stack</option>
+                        <option value="HTML/CSS/Javascript">HTML/CSS/Javascript</option>
+                        <option value="ReactJS">ReactJS</option>
+                        <option value="Other">Other</option>
                     </Select>
                 </div>
                 <div className='flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3'>

@@ -22,7 +22,7 @@ export default function DashPosts() {
         const data = await res.json()
         if (res.ok) { 
           setUserPosts(data.posts)
-          if (data.posts.length < 8) {
+          if (data.posts.length < 9) {
             setShowMore(false)
           }
           setLoading(false);
@@ -44,7 +44,7 @@ export default function DashPosts() {
       const data = await res.json();
       if (res.ok) {
         setUserPosts((prev) => [...prev, ...data.posts])
-        if (data.posts.length < 8) {
+        if (data.posts.length < 9) {
           setShowMore(false)
         }
       }
@@ -72,7 +72,7 @@ export default function DashPosts() {
 
   if (loading) {
     return (
-      <div className='md:mx-auto flex justify-center items-center min-h-screen'>
+      <div className='md:mx-auto flex justify-center items-center min-h-96'>
         <Spinner size='xl' />
       </div>
     )

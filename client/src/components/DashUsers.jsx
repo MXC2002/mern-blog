@@ -21,7 +21,7 @@ export default function DashUsers() {
                 if (res.ok) {
                     setLoading(false);
                     setUsers(data.users);
-                    if (data.users.length < 8) {
+                    if (data.users.length < 9) {
                         setShowMore(false)
                     }
                 }
@@ -42,7 +42,7 @@ export default function DashUsers() {
             const data = await res.json();
             if (res.ok) {
                 setUsers((prev) => [...prev, ...data.users])
-                if (data.users.length < 8) {
+                if (data.users.length < 9) {
                     setShowMore(false)
                 }
             }
@@ -70,7 +70,7 @@ export default function DashUsers() {
 
     if (loading) {
         return (
-            <div className='md:mx-auto flex justify-center items-center min-h-screen'>
+            <div className='md:mx-auto flex justify-center items-center min-h-96'>
                 <Spinner size='xl' />
             </div>
         )
