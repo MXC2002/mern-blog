@@ -5,15 +5,21 @@ import { Link } from 'react-router-dom';
  
 export default function Home() {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch('/api/post/getposts?limit=6');
+        setLoading(true);
+        const res = await fetch('/api/post/getposts?limit=3');
         const data = await res.json();
-        setPosts(data.posts);
+        if (res.ok) {
+          setLoading(false);
+          setPosts(data.posts);
+        }
       } catch (error) {
         console.log(error);
+        setLoading(false);
       }
     }
     fetchPosts();
@@ -29,10 +35,17 @@ export default function Home() {
       </div>
 
       <div className='max-w-6xl mx-auto p-3 flex flex-col gap-8'>
+      {
+          loading && (
+            <div className='mx-auto flex justify-center items-center min-h-96'>
+              Đang tải...
+            </div>
+          )
+        }
         {
           posts && posts.length > 0 && (
             <div className="flex flex-col gap-6 my-3">
-              <h2 className='lg:text-3xl text-2xl text-center text-blue-600 dark:text-blue-300 font-extrabold'>Bài viết nổi bật</h2>
+              <h2 className='lg:text-3xl text-2xl text-center text-blue-600 dark:text-blue-300 font-extrabold uppercase'>Bài viết nổi bật</h2>
               <div className="flex flex-wrap gap-4 justify-center">
                 {
                   posts.map((post) => (

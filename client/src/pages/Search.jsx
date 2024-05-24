@@ -8,8 +8,8 @@ export default function Search() {
   const navigate = useNavigate();
   const [sidebarData, setSidebarData] = useState({
     searchTerm: '',
-    sort: 'asc',
-    category: 'uncategorized',
+    sort: 'desc',
+    category: '',
   });
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -55,7 +55,7 @@ export default function Search() {
     }
 
     if (e.target.id === 'sort') {
-      const order = e.target.value || 'asc';
+      const order = e.target.value || 'desc';
       setSidebarData({
         ...sidebarData,
         sort: order,
@@ -79,7 +79,7 @@ export default function Search() {
     urlParams.set('sort', sidebarData.sort);
     urlParams.set('category', sidebarData.category);
     const searchQuery = urlParams.toString();
-    navigate(`/search/${searchQuery}`);
+    navigate(`/search?${searchQuery}`);
   };
 
   const handleShowMore = async () => {
@@ -109,8 +109,8 @@ export default function Search() {
           <div className="flex items-center gap-3">
             <label className='font-semibold' htmlFor="sort">Sắp Xếp :</label>
             <Select id='sort' onChange={handleChange} value={sidebarData.sort}>
-              <option value="asc">Mới nhất</option>
-              <option value="desc">Cũ nhất</option>
+              <option value="desc">Mới nhất</option>
+              <option value="asc">Cũ nhất</option>
             </Select>
           </div>
           <div className="flex items-center gap-2 md:flex-col md:items-start">
@@ -125,14 +125,14 @@ export default function Search() {
               <option value="Other">Other</option>
             </Select>
           </div>
-          <Button type='submit' outline gradientDuoTone='purpleToPink' className='capitalize'>
+          <Button type='submit' outline gradientDuoTone='purpleToPink'>
             Lọc Nội Dung Tìm Kiếm
           </Button>
         </form>
       </div>
       <div className='w-full'>
-        <h1 className='capitalize text-3xl font-semibold border-b border-gray-500 p-3 mt-5'>Kết quả tìm kiếm bài viết</h1>
-        <div className='flex flex-wrap gap-4 justify-center mt-5 px-4'>
+        <h1 className='capitalize text-3xl text-blue-600 dark:text-blue-300 font-semibold border-b border-gray-500 p-3 pl-5 mt-5'>Kết quả tìm kiếm bài viết</h1>
+        <div className='flex flex-wrap gap-4 justify-center my-5 px-4'>
 
           {!loading && posts.length === 0 && (
             <p className='text-xl text-gray-500 capitalize mx-auto'>Không tìm thấy kết quả nào cả.</p>
