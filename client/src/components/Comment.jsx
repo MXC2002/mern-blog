@@ -70,7 +70,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
                 <img src={user.profilePicture} alt={user.username} className="w-10 h-10 rounded-full bg-gray-200" />
             </div>
             <div className="flex-1">
-                <div className="flex items-center mb-1">
+                <div className="flex items-center mb-1 gap-2">
                     <span className="font-bold mr-1 text-xs truncate">
                         {user ? `@${user.username}` : 'Người dùng ẩn danh'}
                     </span>

@@ -120,8 +120,8 @@ export default function DashComments() {
         <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-200 scrollbar-thumb-slate-400 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-400">
             {currentUser.isAdmin && comments.length > 0 ? (
                 <>
-                    <Table hoverable className="shadow-sm">
-                        <Table.Head className="text-center">
+                    <Table hoverable className="shadow-sm text-center">
+                        <Table.Head>
                             <Table.HeadCell>Ngày tạo</Table.HeadCell>
                             <Table.HeadCell>Ngày cập nhật</Table.HeadCell>
                             <Table.HeadCell>Nội dung bình luận</Table.HeadCell>
@@ -131,7 +131,7 @@ export default function DashComments() {
                             <Table.HeadCell>Xóa</Table.HeadCell>
                         </Table.Head>
                         {comments.map((comment) => (
-                            <Table.Body key={comment._id} className="divide-y text-center">
+                            <Table.Body key={comment._id} className="divide-y">
                                 <Table.Row className="bg-white dark:bg-gray-800">
                                     <Table.Cell>{new Date(comment.createdAt).toLocaleDateString()}</Table.Cell>
                                     <Table.Cell>{new Date(comment.updatedAt).toLocaleDateString()}</Table.Cell>

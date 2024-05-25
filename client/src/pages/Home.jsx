@@ -27,7 +27,7 @@ export default function Home() {
   return (
     <div>
       <div className="relative flex flex-col gap-6 p-4 max-w-6xl mx-auto">
-        <img className="opacity-20 h-[260px] object-cover" src={blogImage} alt="" />
+        <img className="opacity-20 h-[260px] object-cover rounded-xl" src={blogImage} alt="" />
         <div className="absolute top-0 left-0 max-w-6xl text-center p-3 md:p-10 m-3">
           <h1 className="text-3xl text-blue-600 dark:text-blue-300 font-black lg:text-6xl">Welcome to my Blog</h1>
           <p className="md:text-lg text-base text-justify mt-5 font-black text-gray-700 dark:text-white md:leading-7">Chào mừng bạn đến với IT Sharing Blog - Nền tảng chia sẻ kiến thức IT và học tập! Hãy cùng khám phá những bài viết bổ ích, tìm hiểu về các nguồn học tốt và chia sẻ kiến thức để phát triển sự nghiệp trong lĩnh vực công nghệ thông tin cùng chúng tôi.</p>

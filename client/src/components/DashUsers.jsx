@@ -80,7 +80,7 @@ export default function DashUsers() {
         <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-200 scrollbar-thumb-slate-400 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-400">
             {currentUser.isAdmin && users.length > 0 ? (
                 <>
-                    <Table hoverable className="shadow-sm">
+                    <Table hoverable className="shadow-sm text-center">
                         <Table.Head>
                             <Table.HeadCell>Ngày tạo</Table.HeadCell>
                             <Table.HeadCell>Ngày cập nhật</Table.HeadCell>

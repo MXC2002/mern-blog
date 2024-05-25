@@ -120,13 +120,13 @@ export default function Header() {
                 </Navbar.Link> */}
 
                 {/* phần sửa mới: */}
-                <Navbar.Link as={Link} to='/' active={path === '/'} className="text-base">
+                <Navbar.Link as={Link} to='/' className={`text-base ${path === '/' && 'text-teal-400'}`}>
                     Trang Chủ
                 </Navbar.Link>
-                <Navbar.Link as={Link} to='/about' active={path === '/about'} className="text-base">
+                <Navbar.Link as={Link} to='/about' className={`text-base ${path === '/about' && 'text-teal-400'}`}>
                     Giới Thiệu
                 </Navbar.Link>
-                <Navbar.Link as={Link} to='/posts' active={path === '/posts'} className="text-base">
+                <Navbar.Link as={Link} to='/posts' className={`text-base ${path === '/posts' && 'text-teal-400'}`}>
                     Bài Viết
                 </Navbar.Link>
 

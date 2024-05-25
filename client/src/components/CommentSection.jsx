@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import Comment from './Comment';
 import { HiOutlineExclamationCircle } from 'react-icons/hi'
+import FavoritePost from './FavoritePost';
+import { FaRegComments } from 'react-icons/fa';
 
 // eslint-disable-next-line react/prop-types
 export default function CommentSection({ postId }) {
@@ -129,6 +131,16 @@ export default function CommentSection({ postId }) {
 
     return (
         <div className='max-w-2xl mx-auto w-full p-3 border-t'>
+            <div className='my-5 flex items-center gap-5 ml-5'>
+                <div className='flex gap-2 items-center'>
+                    <FavoritePost postId={postId}/>
+                </div>
+                <div className='flex gap-2 items-center'>
+                    <FaRegComments className='lg:text-xl text-2xl' />
+                    <p>{comments.length}</p>
+                  
+                </div>
+            </div>
             {currentUser ? (
                 <div className="flex items-center gap-1 my-3 text-gray-500 text-sm">
                     <p>Đăng nhập với</p>
@@ -146,7 +158,7 @@ export default function CommentSection({ postId }) {
                 </div>
             )}
             {currentUser && (
-                <form onSubmit={handleSubmit} className='border border-teal-500 rounded-md p-3'>
+                <form onSubmit={handleSubmit} className='border border-teal-500 rounded-md p-3 mb-7'>
                     <Textarea placeholder='Viết bình luận' rows='3' maxLength='200'
                         onChange={(e) => {
                             setComment(e.target.value),
@@ -166,17 +178,13 @@ export default function CommentSection({ postId }) {
                     }
                 </form>
             )}
+
             {
                 comments.length === 0 ? (
                     <div className='text-gray-500 my-5 flex justify-center'>Chưa có bình luận nào.</div>
                 ) : (
                     <>
-                        <div className='my-5 flex items-center gap-1'>
-                            <p>Số bình luận:</p>
-                            <div className='border border-gray-400 py-1 px-2 rounded-md'>
-                                <p>{comments.length}</p>
-                            </div>
-                        </div>
+
                         {
                             comments.map((comment) => (
                                 <Comment key={comment._id}
