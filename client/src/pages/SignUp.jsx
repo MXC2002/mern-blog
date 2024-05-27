@@ -21,6 +21,7 @@ export default function SignUp() {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
 
     setErrorMessage(null)
+    setLoading(false)
   };
 
   const handleSubmit = async (e) => {
@@ -41,12 +42,13 @@ export default function SignUp() {
       // eslint-disable-next-line no-unused-vars
       const data = await res.json();
       if (data.success === false) {
+        setLoading(false)
         return setErrorMessage(data.message)
       }
-      setLoading(false)
       if (res.ok) {
         navigate('/login')
       }
+      setLoading(false)
     } catch (error) {
       setErrorMessage(error.message)
       setLoading(false)
@@ -74,10 +76,10 @@ export default function SignUp() {
         <div className="flex-1 relative">
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div>
-              <Label value="Tên tài khoản" />
+              <Label value="Tên Người Dùng" />
               <TextInput
                 type="text"
-                placeholder="Tên tài khoản"
+                placeholder="Tên Người Dùng"
                 id="username"
                 onChange={handleChange}
               />

@@ -7,6 +7,7 @@ import PostCard from '../components/PostCard';
 export default function PostDetail() {
     const { postSlug } = useParams();
     const [loading, setLoading] = useState(true);
+    const [loadingPostCard, setLoadingPostCard] = useState(true);
     const [post, setPost] = useState(null);
     const [recentPosts, setRecentPosts] = useState(null);
 
@@ -35,18 +36,22 @@ export default function PostDetail() {
         fetchPost();
     }, [postSlug]);
 
-    useEffect( () => {
+    useEffect(() => {
         try {
-            const fetchRecentPosts  = async () => {
+            setLoadingPostCard(true);
+            const fetchRecentPosts = async () => {
                 const res = await fetch('/api/post/getposts?limit=3');
                 const data = await res.json();
                 if (res.ok) {
+                    setLoadingPostCard(false);
                     setRecentPosts(data.posts);
                 }
+                setLoadingPostCard(false);
             };
             fetchRecentPosts();
         } catch (error) {
             console.log(error.message);
+            setLoadingPostCard(false);
         }
     }, []);
 
@@ -65,7 +70,7 @@ export default function PostDetail() {
                     <Button color='gray' pill size='xs'>{post && post.category}</Button>
                 </Link>
             )}
-            <img src={post.image} alt={post.title} className='mt-10 p-3 max-h-[600px] w-full object-cover' />
+            <img src={post.image} alt={post.title} className='mt-10 p-3 max-h-[600px] w-full object-contain' />
             <div className='flex justify-between p-3 border-b border-slate-500 mx-auto w-full max-w-2xl text-sm'>
                 <span>{post.dateString}</span>
                 <span className='italic'>{post.readingTime} phút để đọc</span>
@@ -78,10 +83,17 @@ export default function PostDetail() {
                 <h1 className='text-2xl mt-5 font-medium'>Bài viết mới nhất</h1>
                 <div className='flex flex-wrap gap-5 mt-5 justify-center'>
                     {
-                        recentPosts && 
-                            recentPosts.map((post) => (
-                                <PostCard key={post._id} post={post}/>
-                            ))
+                        loadingPostCard && (
+                            <div className='mx-auto flex justify-center items-center min-h-96'>
+                                Đang tải...
+                            </div>
+                        )
+                    }
+                    {
+                        recentPosts &&
+                        recentPosts.map((post) => (
+                            <PostCard key={post._id} post={post} />
+                        ))
                     }
                 </div>
             </div>

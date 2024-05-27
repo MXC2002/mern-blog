@@ -2,7 +2,7 @@
 export default function About() {
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="max-w-3xl mx-auto p-3 text-center">
+      <div className="max-w-3xl mx-auto p-5 text-center">
         <div className="bg-teal-300 rounded-2xl mt-7 p-5 shadow-2xl dark:shadow-teal-600 dark:bg-teal-200">
           <h1 className="text-3xl font-semibold text-center mb-3 dark:text-gray-700">Giới thiệu về IT Sharing Blog</h1>
           <p className="text-md text-gray-600">Chào mừng bạn đến với IT Sharing Blog - Nền tảng chia sẻ kiến thức IT và học tập! Tại đây, chúng tôi tập trung vào việc cung cấp những thông tin, hướng dẫn và nguồn học tốt nhất để giúp bạn vươn lên trong lĩnh vực công nghệ thông tin.</p>
