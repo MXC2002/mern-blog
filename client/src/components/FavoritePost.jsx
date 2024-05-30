@@ -69,9 +69,9 @@ export default function FavoritePost({ postId }) {
             <button onClick={handleFavorite} className="flex items-center space-x-1 text-gray-500 hover:text-red-500 focus:outline-none">
                 {favorited ? <HiHeart className="text-red-600 dark:text-red-500 lg:text-2xl text-3xl" /> : <HiOutlineHeart className="lg:text-2xl text-3xl" />}
             </button>
-            {favoritesCount > 0 && (
+            {favoritesCount > 0 ? (
                 <p>{favoritesCount}</p>
-            )}
+            ) : <p>0</p>}
         </>
     );
 }
