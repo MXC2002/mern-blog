@@ -45,8 +45,8 @@ export default function Home() {
         {
           posts && posts.length > 0 && (
             <div className="flex flex-col gap-6 my-3">
-              <h2 className='lg:text-3xl text-2xl text-center text-blue-600 dark:text-blue-300 font-extrabold uppercase'>Bài viết nổi bật</h2>
-              <div className="flex flex-wrap gap-4 justify-center">
+              <h2 className='lg:text-3xl text-2xl text-center text-teal-500 dark:text-teal-300 font-extrabold uppercase'>Bài viết nổi bật</h2>
+              <div className="flex flex-wrap lg:gap-4 gap-7 justify-center">
                 {
                   posts.map((post) => (
                     <PostCard key={post._id} post={post}/>

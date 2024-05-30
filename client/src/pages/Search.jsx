@@ -17,9 +17,9 @@ export default function Search() {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl = urlParams.get('searchTerm');
-    const sortFromUrl = urlParams.get('sort');
-    const categoryFromUrl = urlParams.get('category');
+    const searchTermFromUrl = urlParams.get('searchTerm') || '';
+    const sortFromUrl = urlParams.get('sort') || 'desc';
+    const categoryFromUrl = urlParams.get('category') || '';
     if (searchTermFromUrl) {
       setSidebarData({
         ...sidebarData,
@@ -63,7 +63,7 @@ export default function Search() {
     }
 
     if (e.target.id === 'category') {
-      const category = e.target.value || 'uncategorized';
+      const category = e.target.value || '';
       setSidebarData({
         ...sidebarData,
         category: category,
@@ -132,7 +132,7 @@ export default function Search() {
       </div>
       <div className='w-full'>
         <h1 className='capitalize text-3xl text-blue-600 dark:text-blue-300 font-semibold border-b border-gray-500 p-3 pl-5 mt-5'>Kết quả tìm kiếm bài viết</h1>
-        <div className='flex flex-wrap gap-4 justify-center my-5 px-4'>
+        <div className='flex flex-wrap lg:gap-4 gap-7 justify-center my-5 px-4'>
 
           {!loading && posts.length === 0 && (
             <p className='text-xl text-gray-500 capitalize mx-auto'>Không tìm thấy kết quả nào cả.</p>
@@ -149,7 +149,8 @@ export default function Search() {
             !loading && posts && posts.map((post) => <PostCard key={post._id} post={post} />)
           }
           {
-            showMore && <button onClick={handleShowMore} className='text-teal-500 text-lg hover:underline p-7 w-full'>
+            showMore && !loading && 
+            <button onClick={handleShowMore} className='text-teal-500 text-lg hover:underline p-7 w-full'>
               Xem thêm
             </button>
           }

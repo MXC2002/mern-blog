@@ -42,7 +42,7 @@ export default function Posts() {
 
   return (
     <div>
-      <div className='max-w-6xl mx-auto p-3 flex flex-col gap-8'>
+      <div className='max-w-6xl mx-auto p-3 flex flex-col'>
         {
           loading && (
             <div className='mx-auto flex justify-center items-center min-h-96'>
@@ -52,9 +52,9 @@ export default function Posts() {
         }
         {
           posts && posts.length > 0 && (
-            <div className="flex flex-col gap-6 my-3">
-              <h2 className='lg:text-5xl text-3xl border-b dark:border-gray-600 pb-3 text-center text-teal-500 dark:text-teal-300 font-extrabold'>Bài viết</h2>
-              <div className="flex flex-wrap gap-4 justify-center">
+            <div className="flex flex-col gap-8 my-3">
+              <h2 className='lg:text-5xl text-3xl border-b dark:border-gray-600 pb-3 text-center text-teal-500 dark:text-teal-300 font-extrabold uppercase'>Bài Viết</h2>
+              <div className="flex flex-wrap lg:gap-4 gap-7 justify-center">
                 {
                   posts.map((post) => (
                     <PostCard key={post._id} post={post} />

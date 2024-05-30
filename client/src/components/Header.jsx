@@ -1,6 +1,6 @@
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AiOutlineSearch } from 'react-icons/ai'
+import { AiOutlineClose, AiOutlineSearch } from 'react-icons/ai'
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleTheme } from '../redux/theme/themeSlice'
@@ -16,7 +16,8 @@ export default function Header() {
     const navigate = useNavigate();
     const { theme } = useSelector(state => state.theme)
     const [searchTerm, setsearchTerm] = useState('');
-    
+    const [isSearchVisible, setIsSearchVisible] = useState(false);
+
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search);
         const searchTermFromUrl = urlParams.get('searchTerm');
@@ -56,24 +57,27 @@ export default function Header() {
                 <span className="px-2 pt-1.5 pb-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">IT Sharing</span>
                 Blog
             </Link>
-            <form onSubmit={handleSubmit}>
-                <TextInput
-                    type="text"
-                    placeholder="Tìm kiếm..."
-                    rightIcon={AiOutlineSearch}
-                    className="hidden lg:inline"
-                    value={searchTerm}
-                    onChange={(e) => setsearchTerm(e.target.value)}
-                />
-            </form>
-            <Button className="w-12 h-10 lg:hidden" color='gray' pill>
-                <AiOutlineSearch />
-            </Button>
-
-            <div className="flex gap-2 md:order-2 mr-2">
+            <div className="flex gap-3">
+                <form onSubmit={handleSubmit} className={`transition-all duration-300 delay-100 ease-in-out lg:opacity-100 ${isSearchVisible ? 'opacity-100 w-40 md:w-auto' : 'opacity-0'}`}>
+                    <TextInput
+                        type="text"
+                        placeholder="Tìm kiếm..."
+                        rightIcon={AiOutlineSearch}
+                        className={`hidden lg:inline ${isSearchVisible ? 'block' : 'hidden'}`}
+                        value={searchTerm}
+                        onChange={(e) => setsearchTerm(e.target.value)}
+                    />
+                </form>
+                <Button className='w-12 h-10 lg:hidden mr-1' color='gray' pill onClick={() => setIsSearchVisible(!isSearchVisible)}>
+                    {isSearchVisible ?
+                        <AiOutlineClose />
+                        :
+                        <AiOutlineSearch />}
+                </Button>
+            </div>
+            <div className={`flex gap-2 md:order-2 mr-2 md:flex ${isSearchVisible ? 'hidden' : 'block'}`}>
                 <Button className="w-12 h-10 hidden sm:inline" color="gray" pill onClick={() => dispatch(toggleTheme())}>
                     {theme === 'light' ? <FaSun /> : <FaMoon />}
-
                 </Button>
                 {currentUser ? (
                     <Dropdown
@@ -107,19 +111,13 @@ export default function Header() {
                 }
                 <Navbar.Toggle />
             </div>
-            <Navbar.Collapse>
-                {/* phần cũ: */}
-                {/* <Navbar.Link active={path === '/'} as={'div'}>
-                    <Link to='/'>Home</Link>
+            <Navbar.Collapse className={`lg:block md:${isSearchVisible ? 'hidden' : 'block'}`}>
+                <Navbar.Link as='div' className="flex items-center justify-between md:hidden">
+                    <span className="text-base dark:text-gray-400">Chế độ Sáng/Tối</span>
+                    <Button className="w-12 h-10" color="gray" pill onClick={() => dispatch(toggleTheme())}>
+                        {theme === 'light' ? <FaSun /> : <FaMoon />}
+                    </Button>
                 </Navbar.Link>
-                <Navbar.Link active={path === '/about'} as={'div'}>
-                    <Link to='/about'>About</Link>
-                </Navbar.Link>
-                <Navbar.Link active={path === '/projects'} as={'div'}>
-                    <Link to='/projects'>Projects</Link>
-                </Navbar.Link> */}
-
-                {/* phần sửa mới: */}
                 <Navbar.Link as={Link} to='/' className={`text-base ${path === '/' && 'text-teal-400 dark:text-slate-100'}`}>
                     Trang Chủ
                 </Navbar.Link>

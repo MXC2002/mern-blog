@@ -80,8 +80,8 @@ export default function PostDetail() {
             <CommentSection postId={post._id} />
 
             <div className="flex flex-col justify-center items-center mb-5 mt-5 border-t border-slate-500">
-                <h1 className='text-2xl mt-5 font-medium'>Bài viết mới nhất</h1>
-                <div className='flex flex-wrap gap-5 mt-5 justify-center'>
+                <h1 className='text-2xl mt-5 mb-3 font-medium text-teal-500 dark:text-teal-300 uppercase'>Bài viết mới nhất</h1>
+                <div className='flex flex-wrap lg:gap-5 gap-7 mt-5 justify-center'>
                     {
                         loadingPostCard && (
                             <div className='mx-auto flex justify-center items-center min-h-96'>
