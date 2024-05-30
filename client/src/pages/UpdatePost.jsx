@@ -166,7 +166,7 @@ export default function UpdatePost() {
                         <img src={formData.image} alt="upload" className='w-full h-auto object-contain' />
                     )
                 }
-                <ReactQuill theme='snow' value={formData.content} placeholder='Viết nội dung...' className='h-96 mb-12' required onChange={(value) => setFormData({
+                <ReactQuill theme='snow' value={formData.content} placeholder='Viết nội dung...' className='h-96 md:mb-12 mb-16' required onChange={(value) => setFormData({
                     ...formData,
                     content: value
                 })} modules={modules}
