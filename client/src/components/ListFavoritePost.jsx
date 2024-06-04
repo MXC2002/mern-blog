@@ -98,34 +98,6 @@ export default function ListFavoritePost() {
 
                     </li>
                 ))}
-                {favoritePosts.map(post => (
-                    <li key={post._id} className="mb-6 relative flex justify-between items-center">
-                        <a href={`/post/${post.slug}`} className="text-blue-500 hover:underline flex gap-3">
-                            <img className='w-20 h-14 object-cover' src={post.image} alt={post.title} />
-                            <p className='flex items-center line-clamp-2 max-w-xs'>{post.title}</p>
-                        </a>
-
-                        <div className="relative">
-                            <button
-                                onClick={() => setDropdownOpen(dropdownOpen === post._id ? null : post._id)}
-                                className="p-2 hover:bg-gray-200 rounded-2xl"
-                            >
-                                <AiOutlineMore />
-                            </button>
-                            {dropdownOpen === post._id && (
-                                <div className="absolute top-0 right-9 w-auto bg-white border border-gray-200 rounded-md shadow-lg">
-                                    <button
-                                        onClick={() => handleDeleteFavorite(post._id)}
-                                        className="text-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    >
-                                        Xóa
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                    </li>
-                ))}
             </ul>
         </div>
     )
