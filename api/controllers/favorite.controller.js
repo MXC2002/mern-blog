@@ -50,3 +50,12 @@ export const getFavoritesCount = async (req, res, next) => {
         next(errorHandler(500, error.message));
     }
 };
+
+export const getUserFavorites = async (req, res, next) => {
+    try {
+        const favorites = await Favorite.find({ userId: req.params.userId });
+        res.status(200).json(favorites);
+    } catch (error) {
+        next(errorHandler(500, error.message));
+    }
+};

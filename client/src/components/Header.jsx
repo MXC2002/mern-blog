@@ -1,3 +1,4 @@
+
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineClose, AiOutlineSearch } from 'react-icons/ai'
@@ -6,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toggleTheme } from '../redux/theme/themeSlice'
 import { logoutSuccess } from '../redux/user/userSlice';
 import { useEffect, useState } from "react";
+import ListFavoritePost from "./ListFavoritePost";
 
 export default function Header() {
 
@@ -50,8 +52,11 @@ export default function Header() {
         navigate(`/search?${searchQuery}`);
     };
 
+    const [isOpen, setIsOpen] = useState(false);
+    const handleClose = () => setIsOpen(false);
+
     return (
-        <Navbar className="border-b-2">
+        <Navbar className="border-b-2 relative">
             <Link to="/"
                 className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white ml-2">
                 <span className="px-2 pt-1.5 pb-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">IT Sharing</span>
@@ -80,26 +85,31 @@ export default function Header() {
                     {theme === 'light' ? <FaSun /> : <FaMoon />}
                 </Button>
                 {currentUser ? (
-                    <Dropdown
-                        arrowIcon={false}
-                        inline
-                        label={
-                            <Avatar
-                                alt="user"
-                                img={currentUser.profilePicture}
-                                rounded
-                            />
-                        }>
-                        <Dropdown.Header>
-                            <span className="block text-sm">@{currentUser.username}</span>
-                            <span className="block text-sm font-medium truncate">{currentUser.email}</span>
-                        </Dropdown.Header>
-                        <Link to={'/dashboard?tab=profile'}>
-                            <Dropdown.Item>Hồ sơ</Dropdown.Item>
-                        </Link>
-                        <Dropdown.Divider />
-                        <Dropdown.Item onClick={handleLogout}>Đăng xuất</Dropdown.Item>
-                    </Dropdown>
+                    <>
+                        <Dropdown
+                            arrowIcon={false}
+                            inline
+                            label={
+                                <Avatar
+                                    alt="user"
+                                    img={currentUser.profilePicture}
+                                    rounded
+                                />
+                            }>
+                            <Dropdown.Header>
+                                <span className="block text-sm">@{currentUser.username}</span>
+                                <span className="block text-sm font-medium truncate">{currentUser.email}</span>
+                            </Dropdown.Header>
+                            <Link to={'/dashboard?tab=profile'}>
+                                <Dropdown.Item>Hồ sơ</Dropdown.Item>
+                            </Link>
+                            <Dropdown.Divider />
+                            <Dropdown.Item onClick={() => setIsOpen(true)}>Danh sách bài viết yêu thích</Dropdown.Item>
+                            <Dropdown.Divider />
+                            <Dropdown.Item onClick={handleLogout}>Đăng xuất</Dropdown.Item>
+                        </Dropdown>
+
+                    </>
                 ) : (
 
                     <Link to="/login">
@@ -111,6 +121,20 @@ export default function Header() {
                 }
                 <Navbar.Toggle />
             </div>
+            {
+                isOpen && (
+                    <div className="absolute right-0 top-16 border min-w-80 min-h-[500px] z-10 bg-white flex flex-col" >
+                        <div className="flex self-end border p-2 mx-2 mt-2 rounded-xl">
+                            <button onClick={handleClose} className="text-gray-600 hover:text-gray-800">
+                                <AiOutlineClose className="w-6 h-6" />
+                            </button>
+                        </div>
+                        <div className="p-3">
+                            <ListFavoritePost />
+                        </div>
+                    </div>
+                )
+            }
             <Navbar.Collapse className={`lg:block md:${isSearchVisible ? 'hidden' : 'block'}`}>
                 <Navbar.Link as='div' className="flex items-center justify-between md:hidden">
                     <span className="text-base dark:text-gray-400">Chế độ Sáng/Tối</span>

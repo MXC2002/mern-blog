@@ -1,6 +1,6 @@
 import express from 'express';
 import { verifyToken } from '../utils/verifyUser.js';
-import { toggleFavorite, getFavoriteStatus, getFavoritesCount } from '../controllers/favorite.controller.js';
+import { toggleFavorite, getFavoriteStatus, getFavoritesCount, getUserFavorites } from '../controllers/favorite.controller.js';
 
 const router = express.Router();
 
@@ -12,5 +12,7 @@ router.post('/:postId', verifyToken, toggleFavorite);
 
 // Route để lấy số lượng yêu thích của một bài viết
 router.get('/:postId/count', getFavoritesCount);
+
+router.get('/user/:userId', verifyToken, getUserFavorites);
 
 export default router;
