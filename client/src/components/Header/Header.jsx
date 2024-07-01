@@ -4,10 +4,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineClose, AiOutlineSearch } from 'react-icons/ai'
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleTheme } from '../redux/theme/themeSlice'
-import { logoutSuccess } from '../redux/user/userSlice';
+import { toggleTheme } from '../../redux/theme/themeSlice'
+import { logoutSuccess } from '../../redux/user/userSlice';
 import { useEffect, useState } from "react";
-import ListFavoritePost from "./ListFavoritePost";
+import ListFavoritePost from "../Post/ListFavoritePost";
 
 export default function Header() {
 

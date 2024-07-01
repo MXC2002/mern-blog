@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import moment from 'moment/min/moment-with-locales';
 import 'moment/locale/vi';
-import { FaReply, FaThumbsUp } from 'react-icons/fa';
+import { FaThumbsUp } from 'react-icons/fa';
 import { Button, Textarea } from "flowbite-react";
 import { useSelector } from 'react-redux'
 

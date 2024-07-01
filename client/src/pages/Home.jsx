@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import blogImage from '../assets/images/blog.png';
-import PostCard from '../components/PostCard'
+import PostCard from '../components/Post/PostCard'
 import { Link } from 'react-router-dom';
  
 export default function Home() {

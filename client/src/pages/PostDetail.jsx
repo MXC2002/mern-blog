@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button, Spinner } from 'flowbite-react';
-import CommentSection from '../components/CommentSection';
-import PostCard from '../components/PostCard';
+import CommentSection from '../components/Comment/CommentSection';
+import PostCard from '../components/Post/PostCard';
 
 export default function PostDetail() {
     const { postSlug } = useParams();

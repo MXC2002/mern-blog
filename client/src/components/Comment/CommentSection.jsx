@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import Comment from './Comment';
 import { HiOutlineExclamationCircle } from 'react-icons/hi'
-import FavoritePost from './FavoritePost';
+import FavoritePost from '../Post/FavoritePost';
 import { FaRegComments } from 'react-icons/fa';
 
 // eslint-disable-next-line react/prop-types

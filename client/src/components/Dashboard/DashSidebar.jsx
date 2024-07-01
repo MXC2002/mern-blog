@@ -2,7 +2,7 @@ import { Sidebar } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import { HiAnnotation, HiArrowRight, HiChartPie, HiDocumentText, HiOutlineUserGroup, HiUser } from 'react-icons/hi'
 import { Link, useLocation } from 'react-router-dom'
-import { logoutSuccess } from '../redux/user/userSlice';
+import { logoutSuccess } from '../../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux'
 
 export default function DashSidebar() {

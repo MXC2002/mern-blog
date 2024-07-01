@@ -1,7 +1,7 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from 'react';
-import OAuth from "../components/OAuth";
+import OAuth from "../components/OAuth/OAuth";
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 export default function SignUp() {

@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { loginInStart, loginInSuccess, loginInFailure } from "../redux/user/userSlice";
-import OAuth from "../components/OAuth";
+import OAuth from "../components/OAuth/OAuth";
 
 export default function Login() {
 
