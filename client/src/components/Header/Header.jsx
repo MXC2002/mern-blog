@@ -75,9 +75,9 @@ export default function Header() {
                 </form>
                 <Button className='w-12 h-10 lg:hidden mr-1' color='gray' pill onClick={() => setIsSearchVisible(!isSearchVisible)}>
                     {isSearchVisible ?
-                        <AiOutlineClose />
+                        <AiOutlineClose className="self-center" />
                         :
-                        <AiOutlineSearch />}
+                        <AiOutlineSearch className="self-center"/>}
                 </Button>
             </div>
             <div className={`flex gap-2 md:order-2 mr-2 md:flex ${isSearchVisible ? 'hidden' : 'block'}`}>
