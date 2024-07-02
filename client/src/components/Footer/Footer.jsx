@@ -6,7 +6,7 @@ export default function FooterComp() {
     return (
         <Footer container className="border border-t-8 border-teal-300">
             <div className="w-full max-w-7xl mx-auto">
-                <div className="grid w-full justify-between sm:flex sm:gap-4 md:grid-cols-1">
+                <div className="w-full md:flex justify-between md:gap-10 sm:grid sm:grid-cols-1">
                     <div className="flex sm:items-center">
                         <Link to="/"
                             className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white">
@@ -18,9 +18,9 @@ export default function FooterComp() {
                         <div>
                             <Footer.Title title="Về chúng tôi" />
                             <Footer.LinkGroup col>
-                                <Footer.Link href="/about" target="_blank">IT Sharing Blog
+                                <Footer.Link href="/about">IT Sharing Blog
                                 </Footer.Link>
-                                <Footer.Link href="mailto:contact@itsharingblog.com" target="_blank">Liên hệ để hợp tác hoặc góp ý</Footer.Link>
+                                <Footer.Link href="mailto:mxcitsharing@gmail.com" target="_blank">Liên hệ để hợp tác hoặc góp ý</Footer.Link>
                             </Footer.LinkGroup>
                         </div>
 
