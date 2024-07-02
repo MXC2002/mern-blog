@@ -80,6 +80,7 @@ export default function Search() {
     urlParams.set('category', sidebarData.category);
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
+    document.activeElement.blur();
   };
 
   const handleShowMore = async () => {
