@@ -5,7 +5,6 @@ import { HiMail } from 'react-icons/hi';
 import logo from '../../assets/images/logo.svg';
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { SignInStart, SignInSuccess, SignInFailure } from "../../redux/user/userSlice";
 import OAuth from "../OAuth/OAuth";
@@ -16,7 +15,6 @@ export default function SignInModal({ show, onClose, onOpenSignUp }) {
     const [formData, setFormData] = useState({});
     const { loading, error: errorMessage } = useSelector(state => state.user)
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
@@ -48,7 +46,6 @@ export default function SignInModal({ show, onClose, onOpenSignUp }) {
             if (res.ok) {
                 dispatch(SignInSuccess(data))
                 onClose();
-                navigate('/')
             }
         } catch (error) {
             dispatch(SignInFailure(error.message))
