@@ -1,11 +1,12 @@
 import { Alert, Button, Modal, Textarea } from 'flowbite-react'
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Comment from './Comment';
 import { HiOutlineExclamationCircle } from 'react-icons/hi'
 import FavoritePost from '../Post/FavoritePost';
 import { FaRegComments } from 'react-icons/fa';
+import AuthModal from '../Auth/AuthModal';
 
 // eslint-disable-next-line react/prop-types
 export default function CommentSection({ postId }) {
@@ -15,7 +16,7 @@ export default function CommentSection({ postId }) {
     const [comments, setComments] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [commentToDelete, setCommentToDelete] = useState(null);
-    const navigate = useNavigate();
+    const [showAuthModal, setShowAuthModal] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -71,7 +72,7 @@ export default function CommentSection({ postId }) {
     const handleLike = async (commentId) => {
         try {
             if (!currentUser) {
-                navigate('/login');
+                setShowAuthModal(true);
                 return;
             }
             const res = await fetch(`/api/comment/likecomment/${commentId}`, {
@@ -109,7 +110,7 @@ export default function CommentSection({ postId }) {
         setShowModal(false);
         try {
             if (!currentUser) {
-                navigate('/login');
+                setShowAuthModal(true);
                 return;
             }
             const res = await fetch(`/api/comment/deletecomment/${commentId}`, {
@@ -152,9 +153,9 @@ export default function CommentSection({ postId }) {
             ) : (
                 <div className="flex items-center gap-1 my-3 text-gray-500 text-sm">
                     <p>Đăng nhập để bình luận.</p>
-                    <Link className='text-sm font-medium text-blue-600 hover:underline' to={'/login'}>
+                    <div className='text-sm font-medium text-blue-600 hover:underline cursor-pointer' onClick={() => setShowAuthModal(true)}>
                         Đăng nhập
-                    </Link>
+                    </div>
                 </div>
             )}
             {currentUser && (
@@ -214,6 +215,12 @@ export default function CommentSection({ postId }) {
                     </div>
                 </Modal.Body>
             </Modal>
+
+            {
+                showAuthModal && (
+                    <AuthModal show={showAuthModal} onClose={() => setShowAuthModal(false)}/>
+                )
+            }
         </div>
     )
 }

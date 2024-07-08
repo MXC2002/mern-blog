@@ -8,8 +8,10 @@ import { toggleTheme } from '../../redux/theme/themeSlice'
 import { logoutSuccess } from '../../redux/user/userSlice';
 import { useEffect, useState } from "react";
 import ListFavoritePost from "../Post/ListFavoritePost";
+import AuthModal from '../Auth/AuthModal';
 
 export default function Header() {
+
 
     const path = useLocation().pathname;
     const location = useLocation();
@@ -55,6 +57,7 @@ export default function Header() {
 
     const [isOpen, setIsOpen] = useState(false);
     const handleClose = () => setIsOpen(false);
+    const [showAuthModal, setShowAuthModal] = useState(false);
 
     return (
         <Navbar className="border-b-2 relative">
@@ -78,7 +81,7 @@ export default function Header() {
                     {isSearchVisible ?
                         <AiOutlineClose className="self-center" />
                         :
-                        <AiOutlineSearch className="self-center"/>}
+                        <AiOutlineSearch className="self-center" />}
                 </Button>
             </div>
             <div className={`flex gap-2 md:order-2 mr-2 md:flex ${isSearchVisible ? 'hidden' : 'block'}`}>
@@ -112,16 +115,22 @@ export default function Header() {
 
                     </>
                 ) : (
-
-                    <Link to="/login">
-                        <Button gradientDuoTone="purpleToBlue" outline>
-                            Đăng nhập
-                        </Button>
-                    </Link>
+                    <Button gradientDuoTone="purpleToBlue" outline onClick={() => setShowAuthModal(true)}>
+                        Đăng nhập
+                    </Button>
                 )
                 }
                 <Navbar.Toggle />
             </div>
+
+            {
+                showAuthModal && (
+                    <>
+                        <AuthModal show={showAuthModal} onClose={() => setShowAuthModal(false)} />                  
+                    </>
+                )
+            }
+
             {
                 isOpen && (
                     <div className="absolute right-0 top-16 border min-w-80 min-h-[500px] z-10 bg-white flex flex-col" >
@@ -154,6 +163,9 @@ export default function Header() {
                 </Navbar.Link>
 
             </Navbar.Collapse>
+
+
+
         </Navbar>
     )
 }

@@ -1,9 +1,9 @@
 import { Button } from "flowbite-react";
-import { AiFillGoogleCircle } from "react-icons/ai";
+import { FcGoogle } from "react-icons/fc";
 import { GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth'
 import { app } from "../../firebase";
 import { useDispatch } from "react-redux";
-import { loginInSuccess } from "../../redux/user/userSlice";
+import { SignInSuccess } from "../../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
 
 export default function OAuth() {
@@ -27,7 +27,7 @@ export default function OAuth() {
             })
             const data = await res.json();
             if(res.ok) {
-                dispatch(loginInSuccess(data))
+                dispatch(SignInSuccess(data))
                 navigate('/')
             }
         } catch (error) {
@@ -36,8 +36,8 @@ export default function OAuth() {
     };
 
     return (
-        <Button type="button" gradientDuoTone='pinkToOrange' outline onClick={handleGoogleClick}>
-            <AiFillGoogleCircle className="w-6 h-6 mr-2"/>
+        <Button className="capitalize w-full" type="button" gradientDuoTone="tealToLime" onClick={handleGoogleClick}>
+            <FcGoogle className="w-6 h-6 mr-2"/>
             Tiếp tục với Google
         </Button>
     );

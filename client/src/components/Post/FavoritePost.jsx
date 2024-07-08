@@ -1,14 +1,14 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import { HiOutlineHeart, HiHeart } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import AuthModal from '../Auth/AuthModal';
 
 export default function FavoritePost({ postId }) {
-    const navigate = useNavigate();
     const { currentUser } = useSelector(state => state.user);
     const [favorited, setFavorited] = useState(false);
     const [favoritesCount, setFavoritesCount] = useState(0);
+    const [showAuthModal, setShowAuthModal] = useState(false);
 
     useEffect(() => {
         const fetchFavoriteStatus = async () => {
@@ -44,7 +44,7 @@ export default function FavoritePost({ postId }) {
     const handleFavorite = async () => {
         try {
             if (!currentUser) {
-                navigate('/login');
+                setShowAuthModal(true);
                 return;
             }
 
@@ -72,6 +72,12 @@ export default function FavoritePost({ postId }) {
             {favoritesCount > 0 ? (
                 <p>{favoritesCount}</p>
             ) : <p>0</p>}
+
+            {
+                showAuthModal && (
+                    <AuthModal show={showAuthModal} onClose={() => setShowAuthModal(false)} />
+                )
+            }
         </>
     );
 }
