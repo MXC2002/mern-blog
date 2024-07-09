@@ -10,17 +10,8 @@ export const signup = async (req, res, next) => {
         return next(errorHandler(400, 'Tất cả các trường là bắt buộc'))
     }
 
-    if (username) {
-
-        if (username.length < 4 || username.length > 20) {
-            return next(errorHandler(400, 'Tên người dùng phải có từ 4 đến 20 ký tự'));
-        }
-        if (username.includes(' ')) {
-            return next(errorHandler(400, 'Tên người dùng không thể chứa khoảng cách'));
-        }
-        if (!username.match(/^[a-zA-Z0-9]+$/)) {
-            return next(errorHandler(400, 'Tên người dùng chỉ có thể chứa chữ cái và số'));
-        }
+    if (username.length < 4 || username.length > 20) {
+        return next(errorHandler(400, 'Tên người dùng phải có từ 4 đến 20 ký tự'));
     }
 
     if (password.length < 6) {

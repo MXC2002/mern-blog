@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux"
 import { Outlet } from "react-router-dom"
 import AuthModal from "../Auth/AuthModal";
@@ -7,17 +7,17 @@ export default function OnlyAdminPrivateRoute() {
   const { currentUser } = useSelector(state => state.user);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
-  const handleOpenAuthModal = () => {
-    setShowAuthModal(true);
-  };
+  useEffect(() => {
+    if (!currentUser || !currentUser.isAdmin) {
+      setShowAuthModal(true);
+    } else {
+      setShowAuthModal(false);
+    }
+  }, [currentUser, currentUser.isAdmin])
 
   const handleCloseAuthModal = () => {
     setShowAuthModal(false);
   };
-
-  if (!currentUser || !currentUser.isAdmin) {
-    handleOpenAuthModal();
-  }
 
   return (
     <>

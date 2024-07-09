@@ -38,7 +38,7 @@ export default function OAuth() {
     return (
         <Button className="capitalize w-full" type="button" gradientDuoTone="tealToLime" onClick={handleGoogleClick}>
             <FcGoogle className="w-6 h-6 mr-2"/>
-            Tiếp tục với Google
+            <p className="self-center">Tiếp tục với Google</p>
         </Button>
     );
 }

@@ -1,5 +1,5 @@
-import { Alert, Button, Modal, TextInput } from 'flowbite-react'
-import { Link } from "react-router-dom";
+import { Alert, Button, Label, Modal, TextInput } from 'flowbite-react'
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
@@ -16,7 +16,7 @@ import {
   logoutSuccess,
 } from '../../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
-import { HiOutlineExclamationCircle } from 'react-icons/hi'
+import { HiLockClosed, HiMail, HiOutlineExclamationCircle, HiUser } from 'react-icons/hi'
 
 
 export default function DashProfile() {
@@ -32,6 +32,7 @@ export default function DashProfile() {
   const [formData, setFormData] = useState({})
   const filePickerRef = useRef()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
@@ -162,6 +163,7 @@ export default function DashProfile() {
         console.log(data.message);
       } else {
         dispatch(logoutSuccess());
+        navigate('/');
       }
     } catch (error) {
       console.log(error.message);
@@ -194,14 +196,64 @@ export default function DashProfile() {
             />
           )}
           <img src={imageFileUrl || currentUser.profilePicture} alt="Người dùng" className={`rounded-full w-full h-full border-8 border-[lightgray]
-          object-cover ${imageFileUploadProgress && imageFileUploadProgress < 100 && 'opacity-60'}`} />
+          object-cover transition duration-300 ease-in-out hover:scale-125 ${imageFileUploadProgress && imageFileUploadProgress < 100 && 'opacity-60'}`} />
         </div>
+        <Label className='text-center'>
+          Avatar
+        </Label>
         {imageFileUploadError && <Alert color='failure'>
           {imageFileUploadError}
         </Alert>}
-        <TextInput type='text' id='username' placeholder='Tên tài khoản' defaultValue={currentUser.username} onChange={handleChange} />
-        <TextInput type='email' id='email' placeholder='Email' defaultValue={currentUser.email} onChange={handleChange} />
-        <TextInput type='password' id='password' placeholder='Mật khẩu' onChange={handleChange} />
+        <div className="space-y-6 mt-2">
+          <div className="relative">
+            <Label
+              htmlFor="username"
+              className="absolute -top-3.5 left-3 text-sm px-1 text-gray-700 select-none z-10 bg-white dark:bg-[rgb(16,22,40)] dark:text-gray-200 rounded-sm"
+            >
+              Tên Người Dùng
+            </Label>
+
+            <TextInput
+              icon={HiUser}
+              type="text"
+              id="username"
+              placeholder="Nhập Tên Người Dùng"
+              defaultValue={currentUser.username}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="relative">
+            <Label htmlFor="email" className="absolute -top-3.5 left-3 text-sm px-1 text-gray-700 select-none z-10 bg-white dark:bg-[rgb(16,22,40)] dark:text-gray-200 rounded-sm">
+              Email
+            </Label>
+
+            <TextInput
+              icon={HiMail}
+              type="email"
+              id="email"
+              placeholder="Nhập Email"
+              defaultValue={currentUser.email}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="relative">
+
+            <Label htmlFor="password" className="absolute -top-3.5 left-3 text-sm px-1 text-gray-700 select-none z-10 bg-white dark:bg-[rgb(16,22,40)] dark:text-gray-200 rounded-sm">
+              Mật khẩu
+            </Label>
+
+            <TextInput
+              icon={HiLockClosed}
+              type="password"
+              id="password"
+              placeholder="Nhập Mật Khẩu"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+
         <Button type='submit' gradientDuoTone='purpleToBlue' outline disabled={loading || imageFileUploading}>
           {loading ? 'Đang tải...' : 'Cập nhật'}
         </Button>

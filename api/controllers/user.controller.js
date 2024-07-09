@@ -16,18 +16,12 @@ export const updateUser = async (req, res, next) => {
         }
         req.body.password = bcryptjs.hashSync(req.body.password, 10);
     }
-    if (req.body.username) {
 
-        if (req.body.username.length < 4 || req.body.username.length > 20) {
-            return next(errorHandler(400, 'Tên người dùng phải có từ 4 đến 20 ký tự'));
-        }
-        if (req.body.username.includes(' ')) {
-            return next(errorHandler(400, 'Tên người dùng không thể chứa khoảng cách'));
-        }
-        if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
-            return next(errorHandler(400, 'Tên người dùng chỉ có thể chứa chữ cái và số'));
-        }
+    if (req.body.username.length < 4 || req.body.username.length > 20) {
+        return next(errorHandler(400, 'Tên người dùng phải có từ 4 đến 20 ký tự'));
     }
+
+
     try {
         const updatedUser = await User.findByIdAndUpdate(req.params.userId, {
             $set: {
@@ -74,12 +68,12 @@ export const getUsers = async (req, res, next) => {
         const sortDirection = req.query.sort === 'asc' ? 1 : -1;
 
         const users = await User.find()
-           .sort({ createdAt: sortDirection})
-           .skip(startIndex)
-           .limit(limit);
+            .sort({ createdAt: sortDirection })
+            .skip(startIndex)
+            .limit(limit);
 
         const usersWithoutPassword = users.map((user) => {
-            const { password,...rest } = user._doc;
+            const { password, ...rest } = user._doc;
             return rest;
         })
 
@@ -116,7 +110,7 @@ export const getUser = async (req, res, next) => {
         if (!user) {
             return next(errorHandler(404, 'Không tìm thấy người dùng'));
         };
-        const { password,...rest } = user._doc;
+        const { password, ...rest } = user._doc;
         res.status(200).json(rest);
     } catch (error) {
         next(error);

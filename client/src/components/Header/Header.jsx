@@ -40,6 +40,7 @@ export default function Header() {
                 console.log(data.message);
             } else {
                 dispatch(logoutSuccess());
+                navigate('/');
             }
         } catch (error) {
             console.log(error.message);
@@ -105,7 +106,7 @@ export default function Header() {
                                 <span className="block text-sm font-medium truncate">{currentUser.email}</span>
                             </Dropdown.Header>
                             <Link to={'/dashboard?tab=profile'}>
-                                <Dropdown.Item>Hồ sơ</Dropdown.Item>
+                                <Dropdown.Item>Quản lý tài khoản</Dropdown.Item>
                             </Link>
                             <Dropdown.Divider />
                             <Dropdown.Item onClick={() => setIsOpen(true)}>Danh sách bài viết yêu thích</Dropdown.Item>

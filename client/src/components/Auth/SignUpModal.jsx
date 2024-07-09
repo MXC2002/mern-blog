@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Button, Alert, Label, Modal, TextInput, Spinner } from "flowbite-react";
-import { HiMail, HiUser } from 'react-icons/hi';
+import { HiLockClosed, HiMail, HiUser } from 'react-icons/hi';
 import logo from '../../assets/images/logo.svg';
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useState } from "react";
@@ -51,14 +51,20 @@ export default function SignUpModal({ show, onClose, onOpenSignIn }) {
         }
     };
 
+    const handleOpenSignIn = () => {
+        setErrorMessage(null);
+        onOpenSignIn();
+
+    }
+
     return (
         <>
             <Modal show={show} size="md" onClose={onClose} popup>
                 <Modal.Header />
                 <Modal.Body>
                     <div className="space-y-6">
-                        <div>
-                            <h3 className="text-2xl text-center uppercase font-black text-gray-900 dark:text-white">Đăng ký</h3>
+                        <div className="select-none">
+                            <h3 className="text-2xl text-center uppercase font-black text-gray-700 dark:text-white">Đăng ký</h3>
                             <div className="flex justify-center items-center mt-2">
                                 <p className="text-gray-500">Vào</p>
                                 <img src={logo} alt="logo" className='mr-1 h-10 rounded-full object-contain' />
@@ -76,13 +82,13 @@ export default function SignUpModal({ show, onClose, onOpenSignIn }) {
 
 
                             <div className="mb-4">
-                                <div className="mb-2 block">
+                                <div className="mb-2 block select-none">
                                     <Label htmlFor="username" value="Tên Người Dùng" />
                                 </div>
                                 <TextInput
                                     id="username"
                                     type="text"
-                                    placeholder="Tên Người Dùng"
+                                    placeholder="Nhập Tên Người Dùng"
                                     required
                                     icon={HiUser}
                                     onChange={handleChange}
@@ -90,13 +96,13 @@ export default function SignUpModal({ show, onClose, onOpenSignIn }) {
                             </div>
 
                             <div className="mb-4">
-                                <div className="mb-2 block">
+                                <div className="mb-2 block select-none">
                                     <Label htmlFor="email" value="Email" />
                                 </div>
                                 <TextInput
                                     id="email"
                                     type="email"
-                                    placeholder="your_email@gmail.com"
+                                    placeholder="Nhập Email"
                                     required
                                     icon={HiMail}
                                     onChange={handleChange}
@@ -104,10 +110,10 @@ export default function SignUpModal({ show, onClose, onOpenSignIn }) {
                             </div>
 
                             <div className="relative mb-6">
-                                <div className="mb-2 block">
+                                <div className="mb-2 block select-none">
                                     <Label htmlFor="password" value="Mật khẩu" />
                                 </div>
-                                <TextInput onChange={handleChange} id="password" placeholder="**********" type={showPassword ? 'text' : 'password'} required />
+                                <TextInput onChange={handleChange} id="password" placeholder="Nhập Mật Khẩu" type={showPassword ? 'text' : 'password'} required icon={HiLockClosed}/>
                                 <div className="absolute md:bottom-2.5 bottom-2 right-3" onClick={() => setShowPassword(!showPassword)}>
                                     {formData.password && (
                                         <>
@@ -155,7 +161,7 @@ export default function SignUpModal({ show, onClose, onOpenSignIn }) {
 
                         <div className="flex justify-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-300">
                             <p>Bạn đã có tài khoản ?</p>
-                            <div className="text-cyan-700 hover:underline dark:text-cyan-500 capitalize cursor-pointer" onClick={onOpenSignIn}>
+                            <div className="text-cyan-700 hover:underline dark:text-cyan-500 capitalize cursor-pointer" onClick={handleOpenSignIn}>
                                 Đăng nhập
                             </div>
                         </div>

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import { Button, Alert, Label, Modal, TextInput, Spinner } from "flowbite-react";
-import { HiMail } from 'react-icons/hi';
+import { HiLockClosed, HiMail } from 'react-icons/hi';
 import logo from '../../assets/images/logo.svg';
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useState } from "react";
@@ -68,8 +68,8 @@ export default function SignInModal({ show, onClose, onOpenSignUp }) {
                 <Modal.Header />
                 <Modal.Body>
                     <div className="space-y-6">
-                        <div>
-                            <h3 className="text-2xl text-center uppercase font-black text-gray-900 dark:text-white">Đăng nhập</h3>
+                        <div className="select-none">
+                            <h3 className="text-2xl text-center uppercase font-black text-gray-700 dark:text-white">Đăng nhập</h3>
                             <div className="flex justify-center items-center mt-2">
                                 <p className="text-gray-500">Vào</p>
                                 <img src={logo} alt="logo" className='mr-1 h-10 rounded-full object-contain' />
@@ -85,13 +85,13 @@ export default function SignInModal({ show, onClose, onOpenSignUp }) {
                         }
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4">
-                                <div className="mb-2 block">
-                                    <Label htmlFor="email" value="Email" />
+                                <div className="mb-2 block select-none">
+                                    <Label className="select-none" htmlFor="email" value="Email" />
                                 </div>
                                 <TextInput
                                     id="email"
                                     type="email"
-                                    placeholder="your_email@gmail.com"
+                                    placeholder="Nhập Email"
                                     required
                                     icon={HiMail}
                                     onChange={handleChange}
@@ -99,10 +99,10 @@ export default function SignInModal({ show, onClose, onOpenSignUp }) {
                             </div>
 
                             <div className="relative mb-6">
-                                <div className="mb-2 block">
+                                <div className="mb-2 block select-none">
                                     <Label htmlFor="password" value="Mật khẩu" />
                                 </div>
-                                <TextInput onChange={handleChange} id="password" placeholder="**********" type={showPassword ? 'text' : 'password'} required />
+                                <TextInput onChange={handleChange} id="password" placeholder="Nhập Mật Khẩu" type={showPassword ? 'text' : 'password'} required icon={HiLockClosed} />
                                 <div className="absolute md:bottom-2.5 bottom-2 right-3" onClick={() => setShowPassword(!showPassword)}>
                                     {formData.password && (
                                         <>
