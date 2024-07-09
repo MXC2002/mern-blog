@@ -1,16 +1,15 @@
+/* eslint-disable react/prop-types */
 import { Button } from "flowbite-react";
 import { FcGoogle } from "react-icons/fc";
 import { GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth'
 import { app } from "../../firebase";
 import { useDispatch } from "react-redux";
 import { SignInSuccess } from "../../redux/user/userSlice";
-import { useNavigate } from "react-router-dom";
 
-export default function OAuth() {
+export default function OAuth({onSuccess}) {
 
     const auth = getAuth(app);
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     const handleGoogleClick = async () => {
         const provider = new GoogleAuthProvider()
         provider.setCustomParameters({ prompt: 'select_account'})
@@ -28,7 +27,7 @@ export default function OAuth() {
             const data = await res.json();
             if(res.ok) {
                 dispatch(SignInSuccess(data))
-                navigate('/')
+                onSuccess();
             }
         } catch (error) {
             console.log(error)

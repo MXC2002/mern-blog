@@ -151,7 +151,7 @@ export default function SignInModal({ show, onClose, onOpenSignUp }) {
                         </div>
 
                         <div className="space-y-2">
-                            <OAuth />
+                            <OAuth onSuccess={handleClose}/>
                         </div>
 
                         <div className="flex justify-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-300">
