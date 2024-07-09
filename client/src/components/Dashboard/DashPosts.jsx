@@ -1,30 +1,28 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react"
 import { useSelector } from 'react-redux'
 import { Button, Modal, Spinner, Table } from 'flowbite-react'
 import { Link } from 'react-router-dom'
 import { HiOutlineExclamationCircle, HiOutlineTrash, HiPencilAlt } from 'react-icons/hi';
 
-
 export default function DashPosts() {
   const { currentUser } = useSelector((state) => state.user)
   const [userPosts, setUserPosts] = useState([]);
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [PostIdToDelete, setPostIdToDelete] = useState('');
+  const [postIdToDelete, setPostIdToDelete] = useState('');
   const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState([]);
 
-  console.log(userPosts);
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        setLoading(true)
-        const res = await fetch(`/api/post/getposts`)
-        const data = await res.json()
-        if (res.ok) { 
-          setUserPosts(data.posts)
+        setLoading(true);
+        const res = await fetch(`/api/post/getposts`);
+        const data = await res.json();
+        if (res.ok) {
+          setUserPosts(data.posts);
           if (data.posts.length < 9) {
-            setShowMore(false)
+            setShowMore(false);
           }
           setLoading(false);
         }
@@ -33,20 +31,9 @@ export default function DashPosts() {
         console.log(error.message);
       }
     };
-    const fetchUsers = async () => {
-      try {
-          const res = await fetch(`/api/user/getusers`)
-          const data = await res.json()
-          if (res.ok) {
-              setUsers(data.users);
-          }
-      } catch (error) {
-          console.log(error.message);
-      }
-  };
+
     if (currentUser.isAdmin) {
       fetchPosts();
-      fetchUsers();
     }
   }, [currentUser._id]);
 
@@ -56,9 +43,9 @@ export default function DashPosts() {
       const res = await fetch(`/api/post/getposts?startIndex=${startIndex}`);
       const data = await res.json();
       if (res.ok) {
-        setUserPosts((prev) => [...prev, ...data.posts])
+        setUserPosts((prev) => [...prev, ...data.posts]);
         if (data.posts.length < 9) {
-          setShowMore(false)
+          setShowMore(false);
         }
       }
     } catch (error) {
@@ -66,36 +53,29 @@ export default function DashPosts() {
     }
   };
 
-  const findUserName = (userId) => {
-    const user = users.find((user) => user._id === userId);
-    return user ? user.username : '';
-  };
-
   const handleDeletePost = async () => {
     setShowModal(false);
     try {
-      const res = await fetch(`/api/post/deletepost/${PostIdToDelete}/${currentUser._id}`, {
+      const res = await fetch(`/api/post/deletepost/${postIdToDelete}/${currentUser._id}`, {
         method: 'DELETE',
       });
       const data = await res.json();
       if (!res.ok) {
         console.log(data.message);
       } else {
-        setUserPosts((prev) => prev.filter((post) => post._id !== PostIdToDelete))
+        setUserPosts((prev) => prev.filter((post) => post._id !== postIdToDelete));
       }
     } catch (error) {
       console.log(error.message);
     }
   };
 
-
-
   if (loading) {
     return (
       <div className='md:mx-auto flex justify-center items-center min-h-96'>
         <Spinner size='xl' />
       </div>
-    )
+    );
   }
 
   return (
@@ -118,7 +98,7 @@ export default function DashPosts() {
                 <Table.Row className="bg-white dark:bg-gray-800">
                   <Table.Cell>{new Date(post.createdAt).toLocaleDateString()}</Table.Cell>
                   <Table.Cell>{new Date(post.updatedAt).toLocaleDateString()}</Table.Cell>
-                  <Table.Cell>{findUserName(post.userId)}</Table.Cell>
+                  <Table.Cell>{post.userId.username}</Table.Cell>
                   <Table.Cell>
                     <Link to={`/post/${post.slug}`}>
                       <img src={post.image} alt={post.title} className="w-20 h-10 object-cover bg-gray-500" />
@@ -133,7 +113,7 @@ export default function DashPosts() {
                   <Table.Cell>
                     <HiOutlineTrash onClick={() => {
                       setShowModal(true);
-                      setPostIdToDelete(post._id)
+                      setPostIdToDelete(post._id);
                     }} className="text-red-500 cursor-pointer text-xl hover:scale-110" title="Xóa" />
                   </Table.Cell>
                   <Table.Cell>
@@ -171,5 +151,5 @@ export default function DashPosts() {
         </Modal.Body>
       </Modal>
     </div>
-  )
+  );
 }

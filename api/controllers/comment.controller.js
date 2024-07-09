@@ -28,9 +28,8 @@ export const createComment = async (req, res, next) => {
 
 export const getPostComments = async (req, res, next) => {
     try {
-        const comments = await Comment.find({ postId: req.params.postId }).sort({
-            createdAt: -1.
-        });
+        const comments = await Comment.find({ postId: req.params.postId })
+            .sort({ createdAt: -1. });
         res.status(200).json(comments);
     } catch (error) {
         next(error);
@@ -107,7 +106,9 @@ export const getcomments = async (req, res, next) => {
         const comments = await Comment.find()
             .sort({ createdAt: sortDirection })
             .skip(startIndex)
-            .limit(limit);
+            .limit(limit)
+            .populate('postId', 'title')
+            .populate('userId', 'username');
         const totalComments = await Comment.countDocuments();
         const now = new Date();
         const oneMonthAgo = new Date(

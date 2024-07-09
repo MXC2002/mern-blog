@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import { useEffect, useState } from "react"
 import { useSelector } from 'react-redux'
@@ -12,8 +13,6 @@ export default function DashComments() {
     const [showModal, setShowModal] = useState(false);
     const [commentIdToDelete, setCommentIdToDelete] = useState('');
     const [loading, setLoading] = useState(true);
-    const [users, setUsers] = useState([]);
-    const [posts, setPosts] = useState([]);
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -33,47 +32,11 @@ export default function DashComments() {
                 console.log(error.message);
             }
         };
-
-        const fetchUsers = async () => {
-            try {
-                const res = await fetch(`/api/user/getusers`)
-                const data = await res.json()
-                if (res.ok) {
-                    setUsers(data.users);
-                }
-            } catch (error) {
-                console.log(error.message);
-            }
-        };
-
-        const fetchPosts = async () => {
-            try {
-                const res = await fetch(`/api/post/getposts`)
-                const data = await res.json()
-                if (res.ok) {
-                    setPosts(data.posts);
-                }
-            } catch (error) {
-                console.log(error.message);
-            }
-        };
         
         if (currentUser.isAdmin) {
             fetchComments();
-            fetchUsers();
-            fetchPosts();
         }
     }, [currentUser._id]);
-
-    const findPostTitle = (postId) => {
-        const post = posts.find((post) => post._id === postId);
-        return post ? post.title : '';
-    };
-
-    const findUserName = (userId) => {
-        const user = users.find((user) => user._id === userId);
-        return user ? user.username : '';
-    };
 
     const handleShowMore = async () => {
         const startIndex = comments.length;
@@ -139,8 +102,8 @@ export default function DashComments() {
                                     <Table.Cell>
                                         {comment.numberOfLikes}
                                     </Table.Cell>
-                                    <Table.Cell>{findPostTitle(comment.postId)}</Table.Cell>
-                                    <Table.Cell>{findUserName(comment.userId)}</Table.Cell>
+                                    <Table.Cell>{comment.postId.title}</Table.Cell>
+                                    <Table.Cell>{comment.userId.username}</Table.Cell>
                                     <Table.Cell>
                                         <HiOutlineTrash onClick={() => {
                                             setShowModal(true);
