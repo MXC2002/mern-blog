@@ -3,15 +3,17 @@ import { Button, Alert, Label, Modal, TextInput, Spinner } from "flowbite-react"
 import { HiLockClosed, HiMail, HiUser } from 'react-icons/hi';
 import logo from '../../assets/images/logo.svg';
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { useState } from "react";
+import {useState } from "react";
 import OAuth from "../OAuth/OAuth";
+import toast from 'react-hot-toast';
 
 
-export default function SignUpModal({ show, onClose, onOpenSignIn }) {
+export default function SignUpModal({ show, onClose, onOpenSignIn, onOpenVerify }) {
     const [formData, setFormData] = useState({});
     const [errorMessage, setErrorMessage] = useState(null);
     const [loading, setLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false);
+
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
@@ -42,7 +44,9 @@ export default function SignUpModal({ show, onClose, onOpenSignIn }) {
                 return setErrorMessage(data.message)
             }
             if (res.ok) {
-                onOpenSignIn();
+                localStorage.setItem("activationToken", data.activationToken);
+                toast.success('Mã xác thực đã gởi đến Mail của bạn', { duration: 4000 })
+                onOpenVerify();
             }
             setLoading(false)
         } catch (error) {
@@ -55,7 +59,7 @@ export default function SignUpModal({ show, onClose, onOpenSignIn }) {
         setErrorMessage(null);
         onOpenSignIn();
 
-    }
+    };
 
     return (
         <>
@@ -113,7 +117,7 @@ export default function SignUpModal({ show, onClose, onOpenSignIn }) {
                                 <div className="mb-2 block select-none">
                                     <Label htmlFor="password" value="Mật khẩu" />
                                 </div>
-                                <TextInput onChange={handleChange} id="password" placeholder="Nhập Mật Khẩu" type={showPassword ? 'text' : 'password'} required icon={HiLockClosed}/>
+                                <TextInput onChange={handleChange} id="password" placeholder="Nhập Mật Khẩu" type={showPassword ? 'text' : 'password'} required icon={HiLockClosed} />
                                 <div className="absolute md:bottom-2.5 bottom-2 right-3" onClick={() => setShowPassword(!showPassword)}>
                                     {formData.password && (
                                         <>
@@ -156,7 +160,7 @@ export default function SignUpModal({ show, onClose, onOpenSignIn }) {
                         </div>
 
                         <div className="space-y-2">
-                            <OAuth onSuccess={onClose}/>
+                            <OAuth onSuccess={onClose} />
                         </div>
 
                         <div className="flex justify-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-300">
@@ -164,6 +168,9 @@ export default function SignUpModal({ show, onClose, onOpenSignIn }) {
                             <div className="text-cyan-700 hover:underline dark:text-cyan-500 capitalize cursor-pointer" onClick={handleOpenSignIn}>
                                 Đăng nhập
                             </div>
+                        </div>
+                        <div className="text-cyan-700 hover:underline dark:text-cyan-500 capitalize cursor-pointer" onClick={onOpenVerify}>
+                            Xác thực
                         </div>
                     </div>
                 </Modal.Body>

@@ -1,9 +1,10 @@
 import express from 'express';
-import { signup, login, google } from '../controllers/auth.controller.js'
+import { signup, login, google, verifyUser } from '../controllers/auth.controller.js'
 
 const router = express.Router();
 
 router.post('/signup', signup)
+router.post('/verify', verifyUser)
 router.post('/login', login)
 router.post('/google', google)
 

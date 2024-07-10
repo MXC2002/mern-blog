@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import bcryptjs from 'bcryptjs';
 import { errorHandler } from "../utils/error.js";
 import jwt from 'jsonwebtoken';
+import sendMail from "../services/sendMail.js";
 
 export const signup = async (req, res, next) => {
     const { username, email, password } = req.body;
@@ -18,6 +19,12 @@ export const signup = async (req, res, next) => {
         return next(errorHandler(400, 'Mật khẩu phải có ít nhất 6 ký tự'));
     }
 
+    const user = await User.findOne({ email });
+
+    if (user) {
+        return next(errorHandler(409, 'Email đã tồn tại'))
+    }
+
     const hashedPassword = bcryptjs.hashSync(password, 10)
 
     const newUser = new User({
@@ -26,14 +33,58 @@ export const signup = async (req, res, next) => {
         password: hashedPassword
     });
 
+    const otp = Math.floor(Math.random() * 1000000)
+
+    const activationToken = jwt.sign(
+        { user: newUser, otp },
+        process.env.ACTIVATION_SECRET,
+        { expiresIn: '5m' }
+    )
+
+    await sendMail(
+        email,
+        'Xác thực tài khoản',
+        `Mã Xác thực của bạn là: ${otp}`
+    )
+
     try {
-        await newUser.save();
-        res.json('Signup  successful')
+        res.status(200).json({
+            success: true,
+            message: 'Mã xác thực đã gởi đến Mail của bạn',
+            activationToken
+        })
 
     } catch (error) {
         next(error);
     }
 
+}
+
+export const verifyUser = async (req, res, next) => {
+    try {
+        const { otp, activationToken } = req.body;
+
+        const verify = jwt.verify(activationToken, process.env.ACTIVATION_SECRET);
+
+        if (!verify) {
+            return next(errorHandler(401, 'Mã xác thực đã hết hạn'))
+        }
+        if (verify.otp !== otp) {
+            return next(errorHandler(401, 'Mã xác thực không đúng'))
+        }
+
+        await User.create({
+            username: verify.user.username,
+            email: verify.user.email,
+            password: verify.user.password
+        })
+
+        res.json({
+            message: 'Xác thực tài khoản thành công'
+        })
+    } catch (error) {
+        next(error);
+    }
 }
 
 export const login = async (req, res, next) => {

@@ -13,12 +13,14 @@ import PostDetail from './pages/PostDetail'
 import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 import Search from './pages/Search'
 import Header from './components/Header/Header'
+import { Toaster } from 'react-hot-toast'
 
 
 export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <Toaster />
       <Header />
       <Routes>
         <Route path='/' element={<Home />} />
