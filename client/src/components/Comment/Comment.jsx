@@ -100,7 +100,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
                     <>
                         <p className="text-gray-600 pb-2 ml-2">{comment.content}</p>
 
-                        <div className="ml-2 mt-1 flex gap-2 items-center pt-2 text-xs border-t dark:border-gray-800 max-w-fit">
+                        <div className="ml-2 mt-1 flex gap-2 pt-2 text-xs border-t dark:border-gray-800 max-w-fit">
                             <button type="button" onClick={() => onLike(comment._id)} className={`text-gray-400 hover:text-blue-500 ${currentUser && comment.likes.includes(currentUser._id) && '!text-blue-500'
                                 }`}>
                                 <FaThumbsUp className="text-sm" />
@@ -119,15 +119,15 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
                             {
                                 currentUser && (currentUser._id === comment.userId && (
                                     <>
-                                        <button type="button" className="text-gray-400 hover:text-blue-500 border-l dark:border-gray-800 pl-2" onClick={handleEdit}>
+                                        <button type="button" className="-mb-1 text-gray-400 hover:text-blue-500 border-l dark:border-gray-800 pl-2" onClick={handleEdit}>
                                             Sửa
                                         </button>
-                                        <button type="button" className="text-gray-400 hover:text-red-400 border-l dark:border-gray-800 pl-2" onClick={() => onDelete(comment._id)}>
+                                        <button type="button" className="-mb-1 text-gray-400 hover:text-red-400 border-l dark:border-gray-800 pl-2" onClick={() => onDelete(comment._id)}>
                                             Xóa
                                         </button>
                                     </>
                                 )) || ( currentUser?.isAdmin && (
-                                    <button type="button" className="text-gray-400 hover:text-red-400 border-l dark:border-gray-800 pl-2" onClick={() => onDelete(comment._id)}>
+                                    <button type="button" className="-mb-1 text-gray-400 hover:text-red-400 border-l dark:border-gray-800 pl-2" onClick={() => onDelete(comment._id)}>
                                         Xóa
                                     </button>
                                 ))                          

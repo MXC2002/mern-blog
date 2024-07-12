@@ -60,35 +60,35 @@ export default function ListFavoritePost() {
     };
 
     if (loading) {
-        return <div className='text-center mt-5'>Đang tải...</div>;
+        return <div className='text-center mt-5 text-gray-700 dark:text-gray-200'>Đang tải...</div>;
     }
 
     if (favoritePosts.length === 0) {
-        return <div className='text-center mt-5'>Không có bài viết yêu thích.</div>;
+        return <div className='text-center mt-5 text-gray-700 dark:text-gray-200'>Không có bài viết yêu thích.</div>;
     }
     return (
         <div>
-            <h2 className="text-2xl font-semibold mb-8 text-center">Danh sách bài viết yêu thích</h2>
+            <h2 className="text-2xl font-semibold mb-8 text-center text-gray-700 dark:text-gray-200">Danh sách bài viết yêu thích</h2>
             <ul className='max-h-[500px] overflow-y-auto'>
                 {favoritePosts.map(post => (
                     <li key={post._id} className="mb-6 relative flex justify-between items-center">
                         <a href={`/post/${post.slug}`} className="text-blue-500 hover:underline flex gap-3">
                             <img className='w-20 h-14 object-cover' src={post.image} alt={post.title} />
-                            <p className='flex items-center line-clamp-2 max-w-xs'>{post.title}</p>
+                            <p className='max-w-xs self-center line-clamp-2'>{post.title}</p>
                         </a>
 
                         <div className="relative">
                             <button
                                 onClick={() => setDropdownOpen(dropdownOpen === post._id ? null : post._id)}
-                                className="p-2 hover:bg-gray-200 rounded-2xl"
+                                className="p-2 hover:bg-gray-200 dark:hover:bg-gray-500 rounded-2xl"
                             >
                                 <AiOutlineMore />
                             </button>
                             {dropdownOpen === post._id && (
-                                <div className="absolute top-0 right-9 w-auto bg-white border border-gray-200 rounded-md shadow-lg">
+                                <div className="absolute top-0 right-9 w-auto bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-500 rounded-md shadow-lg">
                                     <button
                                         onClick={() => handleDeleteFavorite(post._id)}
-                                        className="text-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        className="text-center rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-500"
                                     >
                                         Xóa
                                     </button>

@@ -16,8 +16,9 @@ import {
   logoutSuccess,
 } from '../../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
-import { HiLockClosed, HiMail, HiOutlineExclamationCircle, HiUser } from 'react-icons/hi'
-
+import { HiLockClosed, HiMail, HiOutlineExclamationCircle, HiUser } from 'react-icons/hi';
+import toast from 'react-hot-toast';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
 
 export default function DashProfile() {
   const { currentUser, error, loading } = useSelector(state => state.user)
@@ -26,10 +27,12 @@ export default function DashProfile() {
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null)
   const [imageFileUploadError, setImageFileUploadError] = useState(null)
   const [imageFileUploading, setImageFileUploading] = useState(false)
-  const [updateUserSuccess, setUpdateUserSuccess] = useState(null)
   const [updateUserError, setUpdateUserError] = useState(null)
   const [showModal, setShowModal] = useState(false)
   const [formData, setFormData] = useState({})
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const filePickerRef = useRef()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -93,14 +96,11 @@ export default function DashProfile() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
     dispatch(updateFailure(null));
     setUpdateUserError(null);
-    setUpdateUserSuccess(null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setUpdateUserError(null)
-    setUpdateUserSuccess(null)
 
     if (Object.keys(formData).length === 0) {
       setUpdateUserError('Không có thay đổi nào được thực hiện')
@@ -112,6 +112,11 @@ export default function DashProfile() {
       return;
     }
 
+    if (formData.newPassword !== formData.confirmPassword) {
+      setUpdateUserError('Mật khẩu mới và xác nhận mật khẩu phải trùng nhau')
+      return;
+    }
+
     try {
       dispatch(updateStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
@@ -119,7 +124,9 @@ export default function DashProfile() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -127,7 +134,16 @@ export default function DashProfile() {
         setUpdateUserError(data.message);
       } else {
         dispatch(updateSuccess(data));
-        setUpdateUserSuccess('Hồ sơ người dùng được cập nhật thành công');
+        setImageFileUploadProgress(null);
+        setFormData({
+          username: '',
+          email: '',
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: '',
+        });
+        toast.success('Cập nhật hồ sơ thành công', { duration: 4000 });
+
       }
     } catch (error) {
       dispatch(updateFailure(error.message));
@@ -238,7 +254,7 @@ export default function DashProfile() {
             />
           </div>
 
-          <div className="relative">
+          {/* <div className="relative">
 
             <Label htmlFor="password" className="absolute -top-3.5 left-3 text-sm px-1 text-gray-700 select-none z-10 bg-white dark:bg-[rgb(16,22,40)] dark:text-gray-200 rounded-sm">
               Mật khẩu
@@ -251,6 +267,78 @@ export default function DashProfile() {
               placeholder="Nhập Mật Khẩu"
               onChange={handleChange}
             />
+          </div> */}
+
+          <div className="relative mb-6">
+            <Label htmlFor="currentPassword" className="absolute -top-3.5 left-3 text-sm px-1 text-gray-700 select-none z-10 bg-white dark:bg-[rgb(16,22,40)] dark:text-gray-200 rounded-sm">
+              Mật Khẩu cũ
+            </Label>
+            <TextInput onChange={handleChange} id="currentPassword" placeholder="Nhập Mật Khẩu cũ" type={showCurrentPassword ? 'text' : 'password'} value={formData.currentPassword} icon={HiLockClosed} />
+            <div className="absolute md:bottom-2.5 bottom-2 right-3" onClick={() => setShowCurrentPassword(!showCurrentPassword)}>
+              {formData.currentPassword && (
+                <>
+                  {
+                    showCurrentPassword ? (
+                      <AiFillEye
+                        className="cursor-pointer text-2xl md:text-lg"
+
+                      />
+                    ) : (
+                      <AiFillEyeInvisible
+                        className="cursor-pointer text-2xl md:text-lg"
+                      />
+                    )}
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="relative mb-6">
+            <Label htmlFor="newPassword" className="absolute -top-3.5 left-3 text-sm px-1 text-gray-700 select-none z-10 bg-white dark:bg-[rgb(16,22,40)] dark:text-gray-200 rounded-sm">
+              Mật Khẩu Mới
+            </Label>
+            <TextInput onChange={handleChange} id="newPassword" placeholder="Nhập Mật Khẩu Mới" type={showNewPassword ? 'text' : 'password'} value={formData.newPassword} icon={HiLockClosed} />
+            <div className="absolute md:bottom-2.5 bottom-2 right-3" onClick={() => setShowNewPassword(!showNewPassword)}>
+              {formData.newPassword && (
+                <>
+                  {
+                    showNewPassword ? (
+                      <AiFillEye
+                        className="cursor-pointer text-2xl md:text-lg"
+
+                      />
+                    ) : (
+                      <AiFillEyeInvisible
+                        className="cursor-pointer text-2xl md:text-lg"
+                      />
+                    )}
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="relative mb-6">
+            <Label htmlFor="confirmPassword" className="absolute -top-3.5 left-3 text-sm px-1 text-gray-700 select-none z-10 bg-white dark:bg-[rgb(16,22,40)] dark:text-gray-200 rounded-sm">
+              Xác nhận Mật Khẩu
+            </Label>
+            <TextInput onChange={handleChange} id="confirmPassword" placeholder="Nhập Xác Nhận Mật Khẩu Mới" type={showConfirmPassword ? 'text' : 'password'} value={formData.confirmPassword} icon={HiLockClosed} />
+            <div className="absolute md:bottom-2.5 bottom-2 right-3" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+              {formData.confirmPassword && (
+                <>
+                  {
+                    showConfirmPassword ? (
+                      <AiFillEye
+                        className="cursor-pointer text-2xl md:text-lg"
+
+                      />
+                    ) : (
+                      <AiFillEyeInvisible
+                        className="cursor-pointer text-2xl md:text-lg"
+                      />
+                    )}
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -272,11 +360,6 @@ export default function DashProfile() {
         <span className='cursor-pointer' onClick={() => setShowModal(true)}>Xóa tài khoản</span>
         <span onClick={handleLogout} className='cursor-pointer'>Đăng xuất</span>
       </div>
-      {updateUserSuccess && (
-        <Alert color='success' className='mt-5 absolute inset-x-0 items-center'>
-          {updateUserSuccess}
-        </Alert>
-      )}
       {
         updateUserError && (
           <Alert className='mt-5 absolute inset-x-0 items-center' color='failure'>

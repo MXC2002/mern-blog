@@ -10,15 +10,25 @@ export const updateUser = async (req, res, next) => {
     if (req.user.id !== req.params.userId) {
         return next(errorHandler(403, 'Bạn không được phép cập nhật người dùng này'));
     }
-    if (req.body.password) {
-        if (req.body.password.length < 6) {
-            return next(errorHandler(400, 'Mật khẩu phải có ít nhất 6 ký tự'));
+    if (req.body.newPassword) {
+        if (req.body.newPassword.length < 6) {
+            return next(errorHandler(400, 'Mật khẩu mới phải có ít nhất 6 ký tự'));
         }
-        req.body.password = bcryptjs.hashSync(req.body.password, 10);
+        req.body.newPassword = bcryptjs.hashSync(req.body.newPassword, 10);
     }
 
-    if (req.body.username.length < 4 || req.body.username.length > 20) {
-        return next(errorHandler(400, 'Tên người dùng phải có từ 4 đến 20 ký tự'));
+    if (req.body.currentPassword) {
+        const user = await User.findById(req.params.userId)
+        const isMatch = bcryptjs.compareSync(req.body.currentPassword, user.password)
+        if (!isMatch) {
+            return next(errorHandler(401, 'Mật khẩu hiện tại không đúng'));
+        }
+    }
+
+    if (req.body.username) {
+        if (req.body.username.length < 4 || req.body.username.length > 20) {
+            return next(errorHandler(400, 'Tên người dùng phải có từ 4 đến 20 ký tự'));
+        }
     }
 
 
@@ -28,7 +38,7 @@ export const updateUser = async (req, res, next) => {
                 username: req.body.username,
                 email: req.body.email,
                 profilePicture: req.body.profilePicture,
-                password: req.body.password
+                password: req.body.newPassword
             }
         }, { new: true })
         const { password, ...rest } = updatedUser._doc;

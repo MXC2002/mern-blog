@@ -63,12 +63,12 @@ export default function Header() {
     return (
         <Navbar className="border-b-2 relative">
             <Link to="/"
-                className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white ml-2">
+                className="self-center whitespace-nowrap text-sm md:text-xl font-semibold dark:text-white ml-2">
                 <span className="px-2 pt-1.5 pb-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">IT Sharing</span>
                 Blog
             </Link>
             <div className="flex gap-3">
-                <form onSubmit={handleSubmit} className={`transition-all duration-300 delay-100 ease-in-out lg:opacity-100 ${isSearchVisible ? 'opacity-100 w-40 md:w-auto' : 'opacity-0'}`}>
+                <form onSubmit={handleSubmit} className={`transition-all duration-300 delay-100 ease-in-out lg:opacity-100 ${isSearchVisible ? 'opacity-100 w-40 md:w-auto' : 'opacity-0'} lg:-mr-20`}>
                     <TextInput
                         type="text"
                         placeholder="Tìm kiếm..."
@@ -78,14 +78,20 @@ export default function Header() {
                         onChange={(e) => setsearchTerm(e.target.value)}
                     />
                 </form>
-                <Button className='w-12 h-10 lg:hidden mr-1' color='gray' pill onClick={() => setIsSearchVisible(!isSearchVisible)}>
+                <div className='lg:hidden md:block hidden mr-1' onClick={() => setIsSearchVisible(!isSearchVisible)}>
                     {isSearchVisible ?
-                        <AiOutlineClose className="self-center" />
+                        <Button className='w-12 h-10' color='gray' pill>
+                            <AiOutlineClose className="self-center" />
+                        </Button>
                         :
-                        <AiOutlineSearch className="self-center" />}
-                </Button>
+                        <Button className='w-12 h-10 ml-5 -mr-20' color='gray' pill>
+                            <AiOutlineSearch className="self-center" />
+                        </Button>
+
+                    }
+                </div>
             </div>
-            <div className={`flex gap-2 md:order-2 mr-2 md:flex ${isSearchVisible ? 'hidden' : 'block'}`}>
+            <div className={`flex gap-2 md:order-2 md:flex ${isSearchVisible ? 'hidden' : 'block'}`}>
                 <Button className="w-12 h-10 hidden sm:inline" color="gray" pill onClick={() => dispatch(toggleTheme())}>
                     {theme === 'light' ? <FaSun /> : <FaMoon />}
                 </Button>
@@ -127,18 +133,18 @@ export default function Header() {
             {
                 showAuthModal && (
                     <>
-                        <AuthModal show={showAuthModal} onClose={() => setShowAuthModal(false)} />                  
+                        <AuthModal show={showAuthModal} onClose={() => setShowAuthModal(false)} />
                     </>
                 )
             }
 
             {
                 isOpen && (
-                    <div className="absolute right-0 top-16 border min-w-80 min-h-[500px] z-10 bg-white flex flex-col" >
-                        <div className="flex self-end border p-2 mx-2 mt-2 rounded-xl">
-                            <button onClick={handleClose} className="text-gray-600 hover:text-gray-800">
-                                <AiOutlineClose className="w-6 h-6" />
-                            </button>
+                    <div className="absolute right-0 top-16 mr-0.5 border min-w-80 min-h-[500px] z-10 bg-white text-gray-700 dark:text-gray-200 dark:bg-[rgb(16,22,40)] flex flex-col" >
+                        <div className="flex self-end p-2">
+                            <Button onClick={handleClose} color='gray' pill className="w-10 h-10">
+                                <AiOutlineClose className="text-xl self-center" />
+                            </Button>
                         </div>
                         <div className="p-3">
                             <ListFavoritePost />
@@ -147,10 +153,21 @@ export default function Header() {
                 )
             }
             <Navbar.Collapse className={`lg:block md:${isSearchVisible ? 'hidden' : 'block'}`}>
+                <Navbar.Link as='div' className="md:hidden block">
+                    <form onSubmit={handleSubmit}>
+                        <TextInput
+                            type="text"
+                            placeholder="Tìm kiếm..."
+                            rightIcon={AiOutlineSearch}
+                            value={searchTerm}
+                            onChange={(e) => setsearchTerm(e.target.value)}
+                        />
+                    </form>
+                </Navbar.Link>
                 <Navbar.Link as='div' className="flex items-center justify-between md:hidden">
                     <span className="text-base dark:text-gray-400">Chế độ Sáng/Tối</span>
                     <Button className="w-12 h-10" color="gray" pill onClick={() => dispatch(toggleTheme())}>
-                        {theme === 'light' ? <FaSun /> : <FaMoon />}
+                        {theme === 'light' ? <FaSun className="self-center" /> : <FaMoon className="self-center" />}
                     </Button>
                 </Navbar.Link>
                 <Navbar.Link as={Link} to='/' className={`text-base ${path === '/' && 'text-teal-400 dark:text-slate-100'}`}>

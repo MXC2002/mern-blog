@@ -99,7 +99,7 @@ export default function CreatePost() {
     ];
 
     return (
-        <div className="p-3 max-w-3xl mx-auto min-h-screen">
+        <div className="p-3 mb-3 max-w-3xl mx-auto min-h-screen">
             <h1 className="text-center text-3xl my-7 font-semibold">Tạo bài viết</h1>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-4 sm:flex-row justify-between">
@@ -147,7 +147,7 @@ export default function CreatePost() {
                     content: value
                 })} modules={modules}
                     formats={formats} />
-                <Button type='submit' gradientDuoTone='purpleToPink'>
+                <Button className='md:mt-0 mt-6' type='submit' gradientDuoTone='purpleToPink'>
                     Đăng bài
                 </Button>
                 {
