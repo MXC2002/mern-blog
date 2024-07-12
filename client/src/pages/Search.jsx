@@ -8,7 +8,7 @@ export default function Search() {
   const navigate = useNavigate();
   const [sidebarData, setSidebarData] = useState({
     searchTerm: '',
-    sort: 'desc',
+    sort: '',
     category: '',
   });
   const [posts, setPosts] = useState([]);

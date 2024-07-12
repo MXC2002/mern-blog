@@ -153,7 +153,7 @@ export default function Header() {
                 )
             }
             <Navbar.Collapse className={`lg:block md:${isSearchVisible ? 'hidden' : 'block'}`}>
-                <Navbar.Link as='div' className="md:hidden block">
+                <div className="md:hidden block border-b border-gray-200 dark:border-gray-700 pb-3 pt-2 mx-4">
                     <form onSubmit={handleSubmit}>
                         <TextInput
                             type="text"
@@ -163,7 +163,7 @@ export default function Header() {
                             onChange={(e) => setsearchTerm(e.target.value)}
                         />
                     </form>
-                </Navbar.Link>
+                </div>
                 <Navbar.Link as='div' className="flex items-center justify-between md:hidden">
                     <span className="text-base dark:text-gray-400">Chế độ Sáng/Tối</span>
                     <Button className="w-12 h-10" color="gray" pill onClick={() => dispatch(toggleTheme())}>
@@ -181,8 +181,6 @@ export default function Header() {
                 </Navbar.Link>
 
             </Navbar.Collapse>
-
-
 
         </Navbar>
     )
