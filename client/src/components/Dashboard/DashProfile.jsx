@@ -131,10 +131,10 @@ export default function DashProfile() {
       const data = await res.json();
       if (!res.ok) {
         dispatch(updateFailure(data.message));
-        setUpdateUserError(data.message);
       } else {
         dispatch(updateSuccess(data));
         setImageFileUploadProgress(null);
+        toast.success('Cập nhật hồ sơ thành công', { duration: 4000 });
         setFormData({
           username: '',
           email: '',
@@ -142,8 +142,6 @@ export default function DashProfile() {
           newPassword: '',
           confirmPassword: '',
         });
-        toast.success('Cập nhật hồ sơ thành công', { duration: 4000 });
-
       }
     } catch (error) {
       dispatch(updateFailure(error.message));
@@ -362,14 +360,14 @@ export default function DashProfile() {
       </div>
       {
         updateUserError && (
-          <Alert className='mt-5 absolute inset-x-0 items-center' color='failure'>
+          <Alert className='mt-5 inset-x-0 items-center' color='failure'>
             {updateUserError}
           </Alert>
         )
       }
       {
         error && (
-          <Alert className='mt-5 absolute inset-x-0 items-center' color='failure'>
+          <Alert className='mt-5 inset-x-0 items-center' color='failure'>
             {error}
           </Alert>
         )

@@ -10,19 +10,22 @@ export const updateUser = async (req, res, next) => {
     if (req.user.id !== req.params.userId) {
         return next(errorHandler(403, 'Bạn không được phép cập nhật người dùng này'));
     }
+
     if (req.body.newPassword) {
+        if (!req.body.currentPassword) {
+            return next(errorHandler(400, 'Phải nhập mật khẩu cũ'));
+        }
+        if (req.body.currentPassword) {
+            const user = await User.findById(req.params.userId)
+            const isMatch = bcryptjs.compareSync(req.body.currentPassword, user.password)
+            if (!isMatch) {
+                return next(errorHandler(401, 'Mật khẩu cũ không đúng'));
+            }
+        }
         if (req.body.newPassword.length < 6) {
             return next(errorHandler(400, 'Mật khẩu mới phải có ít nhất 6 ký tự'));
         }
         req.body.newPassword = bcryptjs.hashSync(req.body.newPassword, 10);
-    }
-
-    if (req.body.currentPassword) {
-        const user = await User.findById(req.params.userId)
-        const isMatch = bcryptjs.compareSync(req.body.currentPassword, user.password)
-        if (!isMatch) {
-            return next(errorHandler(401, 'Mật khẩu hiện tại không đúng'));
-        }
     }
 
     if (req.body.username) {
