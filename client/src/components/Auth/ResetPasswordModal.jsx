@@ -31,6 +31,11 @@ export default function ResetPasswordModal({ show, onClose, onOpenSignIn }) {
         if (formData.newPassword !== formData.confirmPassword) {
             return setErrorMessage('Mật khẩu mới và xác nhận mật khẩu phải trùng nhau')
         }
+
+        if (formData.newPassword.length < 6) {
+            return setErrorMessage('Mật khẩu phải có ít nhất 6 ký tự')
+        }
+
         try {
             setLoading(true);
             setErrorMessage(null)

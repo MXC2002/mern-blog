@@ -68,6 +68,11 @@ export default function SignInModal({ show, onClose, onOpenSignUp, onOpenForgotP
         onOpenSignUp();
     }
 
+    const handleOpenForgotPassword = () => {
+        dispatch(SignInFailure(null));
+        onOpenForgotPassword();
+    }
+
     return (
         <>
             <Modal show={show} size="md" onClose={handleClose} popup>
@@ -142,7 +147,7 @@ export default function SignInModal({ show, onClose, onOpenSignUp, onOpenForgotP
                         </form>
 
                         <div className="flex justify-center">
-                            <div className="text-sm text-cyan-700 hover:underline dark:text-cyan-500 cursor-pointer" onClick={onOpenForgotPassword}>
+                            <div className="text-sm text-cyan-700 hover:underline dark:text-cyan-500 cursor-pointer" onClick={handleOpenForgotPassword}>
                                 Quên mật khẩu ?
                             </div>
                         </div>
