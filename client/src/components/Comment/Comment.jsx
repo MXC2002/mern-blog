@@ -67,14 +67,20 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
     return (
         <div className="flex p-4 border-b dark:border-gray-600 text-sm">
             <div className="flex-shrink-0 mr-3">
-                <img src={user.profilePicture} alt={user.username} className="w-10 h-10 rounded-full bg-gray-200" />
+                {user && user.profilePicture ? (
+                    <img src={user.profilePicture} alt={user.username} className="w-10 h-10 rounded-full bg-gray-200" />
+                ) : (
+                    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                        ?
+                    </div>
+                )}
             </div>
             <div className="flex-1">
                 <div className="flex items-center mb-1 gap-2">
-                    <span className="font-bold mr-1 text-xs truncate">
-                        {user ? `@${user.username}` : 'Người dùng ẩn danh'}
+                    <span className="flex-3 font-bold mr-1 text-xs">
+                        {user && user.username ? `@${user.username}` : 'Người dùng đã bị xóa'}
                     </span>
-                    <span className="text-gray-500 text-xs">
+                    <span className="flex-1 text-gray-500 text-xs">
                         {moment(comment.createdAt).fromNow()}
                     </span>
                 </div>
@@ -101,19 +107,25 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
                         <p className="text-gray-600 pb-2 ml-2">{comment.content}</p>
 
                         <div className="ml-2 mt-1 flex gap-2 pt-2 text-xs border-t dark:border-gray-800 max-w-fit">
-                            <button type="button" onClick={() => onLike(comment._id)} className={`text-gray-400 hover:text-blue-500 ${currentUser && comment.likes.includes(currentUser._id) && '!text-blue-500'
-                                }`}>
-                                <FaThumbsUp className="text-sm" />
-                            </button>
-
                             {
-                                comment.numberOfLikes > 0 &&
-                                <p className="text-gray-400">
-                                    {
-                                        comment.numberOfLikes + " " + (comment.numberOfLikes === 1 ? 'like' : 'likes')
-                                    }
-                                </p>
+                                user && user._id ? (
+                                    <>
+                                        <button type="button" onClick={() => onLike(comment._id)} className={`text-gray-400 hover:text-blue-500 ${currentUser && comment.likes.includes(currentUser._id) && '!text-blue-500'
+                                            }`}>
+                                            <FaThumbsUp className="text-sm" />
+                                        </button>
 
+                                        {
+                                            comment.numberOfLikes > 0 &&
+                                            <p className="text-gray-400">
+                                                {
+                                                    comment.numberOfLikes + " " + (comment.numberOfLikes === 1 ? 'like' : 'likes')
+                                                }
+                                            </p>
+
+                                        }
+                                    </>
+                                ) : ''
                             }
 
                             {
@@ -126,11 +138,11 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
                                             Xóa
                                         </button>
                                     </>
-                                )) || ( currentUser?.isAdmin && (
-                                    <button type="button" className="-mb-1 text-gray-400 hover:text-red-400 border-l dark:border-gray-800 pl-2" onClick={() => onDelete(comment._id)}>
+                                )) || (currentUser?.isAdmin && (
+                                    <button type="button" className={`-mb-1 text-gray-400 hover:text-red-400 border-l dark:border-gray-800 pl-2 ${user && user._id ? '' : 'border-none -ml-2'}`} onClick={() => onDelete(comment._id)}>
                                         Xóa
                                     </button>
-                                ))                          
+                                ))
                             }
                         </div>
                     </>

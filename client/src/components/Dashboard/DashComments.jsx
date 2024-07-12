@@ -102,8 +102,8 @@ export default function DashComments() {
                                     <Table.Cell>
                                         {comment.numberOfLikes}
                                     </Table.Cell>
-                                    <Table.Cell>{comment.postId.title}</Table.Cell>
-                                    <Table.Cell>{comment.userId.username}</Table.Cell>
+                                    <Table.Cell>{comment.postId?.title}</Table.Cell>
+                                    <Table.Cell>{comment.userId?.username}</Table.Cell>
                                     <Table.Cell>
                                         <HiOutlineTrash onClick={() => {
                                             setShowModal(true);
