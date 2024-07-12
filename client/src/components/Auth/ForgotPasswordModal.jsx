@@ -4,32 +4,28 @@ import { Button, Alert, Label, Modal, TextInput, Spinner } from "flowbite-react"
 import logo from '../../assets/images/logo.svg';
 import { useState } from "react";
 import toast from 'react-hot-toast';
-import { HiOutlineKey } from "react-icons/hi";
+import { HiMail } from "react-icons/hi";
 
 
-export default function VerifyModal({ show, onClose, onOpenSignIn }) {
-    const [otp, setOtp] = useState();
+export default function ForgotPasswordModal({ show, onClose, onOpenResetPassword }) {
+    const [email, setEmail] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
     const [loading, setLoading] = useState(false)
-    const activationToken = localStorage.getItem('activationToken');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!otp) {
-            return setErrorMessage('Vui lòng nhập mã xác thực')
+        if (!email) {
+            return setErrorMessage('Vui lòng nhập email của bạn')
         }
         try {
             setLoading(true);
             setErrorMessage(null)
-            const res = await fetch('/api/auth/verify', {
+            const res = await fetch('/api/auth/forgot-password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    otp: Number(otp),
-                    activationToken
-                }),
+                body: JSON.stringify({email}),
             })
             // eslint-disable-next-line no-unused-vars
             const data = await res.json();
@@ -38,9 +34,9 @@ export default function VerifyModal({ show, onClose, onOpenSignIn }) {
                 return setErrorMessage(data.message)
             }
             setLoading(false)
-            localStorage.clear();
-            toast.success('Xác thực tài khoản thành công', { duration: 4000 })
-            onOpenSignIn();
+            localStorage.setItem("resetToken", data.resetToken);
+            toast.success('Mã đặt lại mật khẩu đã gởi đến Mail của bạn', { duration: 4000 })
+            onOpenResetPassword();
         } catch (error) {
             setErrorMessage(error.message)
             setLoading(false)
@@ -48,8 +44,8 @@ export default function VerifyModal({ show, onClose, onOpenSignIn }) {
     };
 
     const handleClose = () => {
+        setEmail('');
         setErrorMessage(null);
-        localStorage.clear();
         onClose();
     };
 
@@ -61,7 +57,7 @@ export default function VerifyModal({ show, onClose, onOpenSignIn }) {
                     <div className="space-y-6">
                         <div className="select-none flex flex-col items-center gap-2">
                             <img src={logo} alt="logo" className='mr-1 h-10 rounded-full object-contain' />
-                            <h3 className="text-2xl uppercase font-black text-gray-700 dark:text-white">Xác thực tài khoản</h3>
+                            <h3 className="text-2xl uppercase font-black text-gray-700 dark:text-white">Quên mật khẩu ?</h3>
 
                         </div>
                         {
@@ -76,16 +72,16 @@ export default function VerifyModal({ show, onClose, onOpenSignIn }) {
 
                             <div className="mb-4">
                                 <div className="mb-2 block select-none">
-                                    <Label htmlFor="otp" value="Mã xác thực" />
+                                    <Label htmlFor="email" value="Email" />
                                 </div>
                                 <TextInput
-                                    id="otp"
-                                    type="text"
-                                    placeholder="Nhập mã (6 ký tự số)"
-                                    icon={HiOutlineKey}
+                                    id="email"
+                                    type="email"
+                                    placeholder="Nhập Email"
                                     required
-                                    value={otp}
-                                    onChange={(e) => setOtp(e.target.value.trim())}
+                                    icon={HiMail}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value.trim())}
                                 />
                             </div>
 
@@ -96,7 +92,7 @@ export default function VerifyModal({ show, onClose, onOpenSignIn }) {
                                             <Spinner size='sm' />
                                             <span className="pl-3">Loading...</span>
                                         </>
-                                    ) : 'Xác thực'
+                                    ) : 'Gửi mã đến Mail'
                                 }
                             </Button>
 
@@ -104,7 +100,8 @@ export default function VerifyModal({ show, onClose, onOpenSignIn }) {
                     </div>
                 </Modal.Body>
             </Modal>
-            
+
         </>
     )
 }
+

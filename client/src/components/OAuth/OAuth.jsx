@@ -5,14 +5,15 @@ import { GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth'
 import { app } from "../../firebase";
 import { useDispatch } from "react-redux";
 import { SignInSuccess } from "../../redux/user/userSlice";
+import toast from "react-hot-toast";
 
-export default function OAuth({onSuccess}) {
+export default function OAuth({ onSuccess }) {
 
     const auth = getAuth(app);
     const dispatch = useDispatch()
     const handleGoogleClick = async () => {
         const provider = new GoogleAuthProvider()
-        provider.setCustomParameters({ prompt: 'select_account'})
+        provider.setCustomParameters({ prompt: 'select_account' })
         try {
             const resultFromGoogle = await signInWithPopup(auth, provider)
             const res = await fetch('/api/auth/google', {
@@ -25,8 +26,12 @@ export default function OAuth({onSuccess}) {
                 })
             })
             const data = await res.json();
-            if(res.ok) {
+            if (res.ok) {
                 dispatch(SignInSuccess(data))
+                toast(`Chào mừng ${data.username}`,
+                    { icon: '🤩' },
+                    { duration: 4000 }
+                );
                 onSuccess();
             }
         } catch (error) {
@@ -36,7 +41,7 @@ export default function OAuth({onSuccess}) {
 
     return (
         <Button className="capitalize w-full" type="button" gradientDuoTone="tealToLime" onClick={handleGoogleClick}>
-            <FcGoogle className="w-6 h-6 mr-2"/>
+            <FcGoogle className="w-6 h-6 mr-2" />
             <p className="self-center">Tiếp tục với Google</p>
         </Button>
     );

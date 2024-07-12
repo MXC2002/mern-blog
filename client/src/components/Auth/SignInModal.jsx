@@ -8,9 +8,11 @@ import { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { SignInStart, SignInSuccess, SignInFailure } from "../../redux/user/userSlice";
 import OAuth from "../OAuth/OAuth";
+import toast from "react-hot-toast";
 
 
-export default function SignInModal({ show, onClose, onOpenSignUp }) {
+
+export default function SignInModal({ show, onClose, onOpenSignUp, onOpenForgotPassword }) {
 
     const [formData, setFormData] = useState({});
     const { loading, error: errorMessage } = useSelector(state => state.user)
@@ -45,6 +47,10 @@ export default function SignInModal({ show, onClose, onOpenSignUp }) {
 
             if (res.ok) {
                 dispatch(SignInSuccess(data))
+                toast(`Chào mừng ${data.username}`,
+                    { icon: '🤩'}, 
+                    { duration: 4000 }
+                );
                 onClose();
             }
         } catch (error) {
@@ -136,9 +142,9 @@ export default function SignInModal({ show, onClose, onOpenSignUp }) {
                         </form>
 
                         <div className="flex justify-center">
-                            <a href="#" className="text-sm text-cyan-700 hover:underline dark:text-cyan-500">
+                            <div className="text-sm text-cyan-700 hover:underline dark:text-cyan-500 cursor-pointer" onClick={onOpenForgotPassword}>
                                 Quên mật khẩu ?
-                            </a>
+                            </div>
                         </div>
 
                         <div className="relative my-4">

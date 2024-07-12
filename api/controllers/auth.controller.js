@@ -49,7 +49,6 @@ export const signup = async (req, res, next) => {
 
     try {
         res.status(200).json({
-            success: true,
             message: 'Mã xác thực đã gởi đến Mail của bạn',
             activationToken
         })
@@ -79,8 +78,79 @@ export const verifyUser = async (req, res, next) => {
             password: verify.user.password
         })
 
-        res.json({
+        res.status(200).json({
             message: 'Xác thực tài khoản thành công'
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const forgotPassword = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        if (!email || email === '') {
+            return next(errorHandler(400, 'Vui lòng nhập Email'))
+        }
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return next(errorHandler(404, 'Không tìm thấy người dùng với Email này'))
+        }
+
+        const otp = Math.floor(Math.random() * 1000000)
+
+        const resetToken = jwt.sign(
+            { user: user, otp },
+            process.env.RESET_PASSWORD_SECRET,
+            { expiresIn: '10m' }
+        );
+
+        await sendMail(
+            email,
+            'Đặt lại mật khẩu',
+            `Mã đặt lại mật khẩu của bạn là: ${otp}`
+        )
+
+        res.status(200).json({
+            message: 'Mã đặt lại mật khẩu đã gởi đến Mail của bạn',
+            resetToken
+        })
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const resetPassword = async (req, res, next) => {
+    try {
+        const { otp, resetToken, password } = req.body;
+
+        const verify = jwt.verify(resetToken, process.env.RESET_PASSWORD_SECRET);
+
+
+        if (!verify) {
+            return next(errorHandler(401, 'Mã đặt lại mật khẩu đã hết hạn'))
+        }
+        if (verify.otp !== otp) {
+            return next(errorHandler(401, 'Mã đặt lại mật khẩu không đúng'))
+        }
+
+        const hashedPassword = bcryptjs.hashSync(password, 10);
+
+        await User.updateOne({ email: verify.user.email },
+            {
+                $set: {
+                    password: hashedPassword
+                }
+
+            }
+        )
+
+        res.status(200).json({
+            message: 'Đặt lại mật khẩu thành công'
         })
     } catch (error) {
         next(error);
@@ -103,11 +173,19 @@ export const login = async (req, res, next) => {
         if (!validPassword) {
             return next(errorHandler(400, 'Mật khẩu không đúng'))
         }
-        const token = jwt.sign({ id: validUser._id, isAdmin: validUser.isAdmin }, process.env.JWT_SECRET);
+        const token = jwt.sign(
+            {
+                id: validUser._id,
+                isAdmin: validUser.isAdmin
+            },
+            process.env.JWT_SECRET
+
+        );
         const { password: pass, ...rest } = validUser._doc
 
         res.status(200).cookie('access_token', token, {
-            httpOnly: true
+            httpOnly: true,
+            sameSite: 'strict',
         }).json(rest)
     } catch (error) {
         next(error);
@@ -134,10 +212,14 @@ export const google = async (req, res, next) => {
                 profilePicture: googlePhotoUrl,
             })
             await newUser.save();
-            const token = jwt.sign({ id: newUser._id, isAdmin: newUser.isAdmin }, process.env.JWT_SECRET);
+            const token = jwt.sign(
+                { id: newUser._id, isAdmin: newUser.isAdmin },
+                process.env.JWT_SECRET
+            );
             const { password: pass, ...rest } = newUser._doc;
             res.status(200).cookie('access_token', token, {
-                httpOnly: true
+                httpOnly: true,
+                sameSite: 'strict',
             }).json(rest)
 
         }

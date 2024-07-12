@@ -17,10 +17,16 @@ import { Toaster } from 'react-hot-toast'
 
 
 export default function App() {
+  const toastOptions = {
+    style: {
+      textAlign: 'center',
+      lineHeight: '1.5',
+    },
+  };
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <Toaster />
+      <Toaster toastOptions={toastOptions}/>
       <Header />
       <Routes>
         <Route path='/' element={<Home />} />
