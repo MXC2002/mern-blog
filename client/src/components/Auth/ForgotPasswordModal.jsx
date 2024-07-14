@@ -35,7 +35,7 @@ export default function ForgotPasswordModal({ show, onClose, onOpenResetPassword
             }
             setLoading(false)
             localStorage.setItem("resetToken", data.resetToken);
-            toast.success('Mã đặt lại mật khẩu đã gởi đến Mail của bạn', { duration: 4000 })
+            toast.success('Mã đặt lại mật khẩu đã gởi đến Mail của bạn', { duration: 3000 })
             onOpenResetPassword();
         } catch (error) {
             setErrorMessage(error.message)

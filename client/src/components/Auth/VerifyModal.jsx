@@ -39,7 +39,7 @@ export default function VerifyModal({ show, onClose, onOpenSignIn }) {
             }
             setLoading(false)
             localStorage.clear();
-            toast.success('Xác thực tài khoản thành công', { duration: 4000 })
+            toast.success('Xác thực tài khoản thành công', { duration: 3000 })
             onOpenSignIn();
         } catch (error) {
             setErrorMessage(error.message)

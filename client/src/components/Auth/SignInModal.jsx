@@ -49,7 +49,7 @@ export default function SignInModal({ show, onClose, onOpenSignUp, onOpenForgotP
                 dispatch(SignInSuccess(data))
                 toast(`Chào mừng ${data.username}`,
                     { icon: '🤩'}, 
-                    { duration: 4000 }
+                    { duration: 3000 }
                 );
                 onClose();
             }

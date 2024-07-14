@@ -26,6 +26,7 @@ export default function DashUsers() {
                         setShowMore(false)
                     }
                 }
+                setLoading(false);
             } catch (error) {
                 setLoading(false);
                 console.log(error.message);

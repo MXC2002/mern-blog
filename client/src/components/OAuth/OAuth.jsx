@@ -30,7 +30,7 @@ export default function OAuth({ onSuccess }) {
                 dispatch(SignInSuccess(data))
                 toast(`Chào mừng ${data.username}`,
                     { icon: '🤩' },
-                    { duration: 4000 }
+                    { duration: 3000 }
                 );
                 onSuccess();
             }

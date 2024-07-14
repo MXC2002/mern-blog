@@ -64,7 +64,7 @@ export default function PostDetail() {
     }
     return post ? (
         <div className='p-3 flex flex-col max-w-6xl mx-auto min-h-screen'>
-            <h1 className='text-3xl mt-10 p-3 text-center font-sans font-medium max-w-2xl mx-auto lg:text-4xl'>{post.title}</h1>
+            <h1 className='text-3xl leading-[40px] mt-10 p-3 text-center font-sans font-medium max-w-2xl mx-auto lg:leading-[45px] lg:text-4xl'>{post.title}</h1>
             {post.category !== 'uncategorized' && (
                 <Link to={`/search?category=${post.category}`} className='self-center mt-5'>
                     <Button color='gray' pill size='xs'>{post && post.category}</Button>

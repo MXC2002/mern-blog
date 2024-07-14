@@ -65,9 +65,9 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
     };
 
     return (
-        <div className="flex p-4 border-b dark:border-gray-600 text-sm">
+        <div className={`flex p-4 border-b dark:border-gray-600 text-sm ${user?._id ? '' : ''}`}>
             <div className="flex-shrink-0 mr-3">
-                {user && user.profilePicture ? (
+                { user?.profilePicture ? (
                     <img src={user.profilePicture} alt={user.username} className="w-10 h-10 rounded-full bg-gray-200" />
                 ) : (
                     <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
@@ -75,10 +75,10 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
                     </div>
                 )}
             </div>
-            <div className="flex-1">
+            <div className={`flex-1 ${ user?._id ? '' : '-mb-4'}`}>
                 <div className="flex items-center mb-1 gap-2">
                     <span className="flex-3 font-bold mr-1 text-xs">
-                        {user && user.username ? `@${user.username}` : 'Người dùng đã bị xóa'}
+                        { user?.username ? `@${user.username}` : 'Người dùng đã bị xóa'}
                     </span>
                     <span className="flex-1 text-gray-500 text-xs">
                         {moment(comment.createdAt).fromNow()}
@@ -108,7 +108,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
 
                         <div className="ml-2 mt-1 flex gap-2 pt-2 text-xs border-t dark:border-gray-800 max-w-fit">
                             {
-                                user && user._id ? (
+                                user?._id ? (
                                     <>
                                         <button type="button" onClick={() => onLike(comment._id)} className={`text-gray-400 hover:text-blue-500 ${currentUser && comment.likes.includes(currentUser._id) && '!text-blue-500'
                                             }`}>
@@ -117,7 +117,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
 
                                         {
                                             comment.numberOfLikes > 0 &&
-                                            <p className="text-gray-400">
+                                            <p className="text-gray-400 -mb-1">
                                                 {
                                                     comment.numberOfLikes + " " + (comment.numberOfLikes === 1 ? 'like' : 'likes')
                                                 }
@@ -139,7 +139,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
                                         </button>
                                     </>
                                 )) || (currentUser?.isAdmin && (
-                                    <button type="button" className={`-mb-1 text-gray-400 hover:text-red-400 border-l dark:border-gray-800 pl-2 ${user && user._id ? '' : 'border-none -ml-2'}`} onClick={() => onDelete(comment._id)}>
+                                    <button type="button" className={`-mb-1 text-gray-400 hover:text-red-400 border-l dark:border-gray-800 pl-2 ${ user?._id ? '' : 'border-none -ml-2 mb-4'}`} onClick={() => onDelete(comment._id)}>
                                         Xóa
                                     </button>
                                 ))

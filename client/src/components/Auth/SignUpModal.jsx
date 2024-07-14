@@ -51,7 +51,7 @@ export default function SignUpModal({ show, onClose, onOpenSignIn, onOpenVerify 
             }
             setLoading(false)
             localStorage.setItem("activationToken", data.activationToken);
-            toast.success('Mã xác thực đã gởi đến Mail của bạn', { duration: 4000 })
+            toast.success('Mã xác thực đã gởi đến Mail của bạn', { duration: 3000 })
             onOpenVerify();
         } catch (error) {
             setErrorMessage(error.message)

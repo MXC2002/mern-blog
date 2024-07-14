@@ -27,6 +27,7 @@ export default function DashComments() {
                     }
                     setLoading(false);
                 }
+                setLoading(false);
             } catch (error) {
                 setLoading(false);
                 console.log(error.message);

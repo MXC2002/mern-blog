@@ -11,6 +11,7 @@ import AuthModal from '../Auth/AuthModal';
 // eslint-disable-next-line react/prop-types
 export default function CommentSection({ postId }) {
     const { currentUser } = useSelector(state => state.user);
+    const [loading, setLoading] = useState(false);
     const [comment, setComment] = useState('');
     const [commentError, setCommentError] = useState(null);
     const [comments, setComments] = useState([]);
@@ -53,16 +54,19 @@ export default function CommentSection({ postId }) {
     useEffect(() => {
         const getComments = async () => {
             try {
+                setLoading(true);
                 const res = await fetch(`/api/comment/getpostcomments/${postId}`);
                 const data = await res.json();
                 if (!res.ok) {
+                    setLoading(false);
                     console.log(data.message);
                     return;
                 }
-
+                setLoading(false);
                 setComments(data);
 
             } catch (error) {
+                setLoading(false);
                 console.log(error.message);
             }
         };
@@ -134,12 +138,12 @@ export default function CommentSection({ postId }) {
         <div className='max-w-2xl mx-auto w-full p-3 border-t'>
             <div className='my-5 flex items-center gap-5 ml-5'>
                 <div className='flex gap-2 items-center'>
-                    <FavoritePost postId={postId}/>
+                    <FavoritePost postId={postId} />
                 </div>
                 <div className='flex gap-2 items-center'>
                     <FaRegComments className='lg:text-xl text-2xl' />
                     <p>{comments.length}</p>
-                  
+
                 </div>
             </div>
             {currentUser ? (
@@ -181,6 +185,16 @@ export default function CommentSection({ postId }) {
             )}
 
             {
+
+                loading && (
+                    <div className='mx-auto flex justify-center items-center min-h-96'>
+                        Đang tải...
+                    </div>
+                )
+
+            }
+
+            {
                 comments.length === 0 ? (
                     <div className='text-gray-500 my-5 flex justify-center'>Chưa có bình luận nào.</div>
                 ) : (
@@ -218,7 +232,7 @@ export default function CommentSection({ postId }) {
 
             {
                 showAuthModal && (
-                    <AuthModal show={showAuthModal} onClose={() => setShowAuthModal(false)}/>
+                    <AuthModal show={showAuthModal} onClose={() => setShowAuthModal(false)} />
                 )
             }
         </div>

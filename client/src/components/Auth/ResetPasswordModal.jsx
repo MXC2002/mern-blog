@@ -58,7 +58,7 @@ export default function ResetPasswordModal({ show, onClose, onOpenSignIn }) {
             }
             setLoading(false)
             localStorage.clear();
-            toast.success('Đặt lại mật khẩu thành công', { duration: 4000 })
+            toast.success('Đặt lại mật khẩu thành công', { duration: 3000 })
             onOpenSignIn();
         } catch (error) {
             setErrorMessage(error.message)
