@@ -5,47 +5,54 @@ import logo from '../../assets/images/logo.svg';
 import { useState } from "react";
 import toast from 'react-hot-toast';
 import { HiOutlineKey } from "react-icons/hi";
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 
 export default function VerifyModal({ show, onClose, onOpenSignIn }) {
-    const [otp, setOtp] = useState();
     const [errorMessage, setErrorMessage] = useState(null);
-    const [loading, setLoading] = useState(false)
     const activationToken = localStorage.getItem('activationToken');
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!otp) {
-            return setErrorMessage('Vui lòng nhập mã xác thực')
-        }
-        try {
-            setLoading(true);
-            setErrorMessage(null)
-            const res = await fetch('/api/auth/verify', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    otp: Number(otp),
-                    activationToken
-                }),
-            })
-            // eslint-disable-next-line no-unused-vars
-            const data = await res.json();
-            if (!res.ok) {
-                setLoading(false)
-                return setErrorMessage(data.message)
+    const formik = useFormik({
+        initialValues: {
+            otp: ''
+        },
+        validationSchema: Yup.object({
+            otp: Yup.number()
+                .required('Vui lòng nhập mã xác thực')
+                .typeError('Vui lòng chỉ nhập số'),
+        }),
+        onSubmit: async (values, { setSubmitting }) => {
+            try {
+                setSubmitting(true);
+                setErrorMessage(null)
+                const res = await fetch('/api/auth/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        otp: Number(values.otp),
+                        activationToken
+                    }),
+                })
+                // eslint-disable-next-line no-unused-vars
+                const data = await res.json();
+                if (!res.ok) {
+                    setSubmitting(false)
+                    return setErrorMessage(data.message)
+                }
+                setSubmitting(false)
+                localStorage.clear();
+                toast.success('Xác thực tài khoản thành công', { duration: 3000 })
+                onOpenSignIn();
+            } catch (error) {
+                setErrorMessage(error.message)
+                setSubmitting(false)
             }
-            setLoading(false)
-            localStorage.clear();
-            toast.success('Xác thực tài khoản thành công', { duration: 3000 })
-            onOpenSignIn();
-        } catch (error) {
-            setErrorMessage(error.message)
-            setLoading(false)
         }
-    };
+    });
+
 
     const handleClose = () => {
         setErrorMessage(null);
@@ -71,8 +78,7 @@ export default function VerifyModal({ show, onClose, onOpenSignIn }) {
                                 </Alert>
                             )
                         }
-                        <form onSubmit={handleSubmit}>
-
+                        <form onSubmit={formik.handleSubmit}>
 
                             <div className="mb-4">
                                 <div className="mb-2 block select-none">
@@ -80,18 +86,26 @@ export default function VerifyModal({ show, onClose, onOpenSignIn }) {
                                 </div>
                                 <TextInput
                                     id="otp"
+                                    name="otp"
                                     type="text"
                                     placeholder="Nhập mã (6 ký tự số)"
                                     icon={HiOutlineKey}
                                     required
-                                    value={otp}
-                                    onChange={(e) => setOtp(e.target.value.trim())}
+                                    value={formik.values.otp}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    color={formik.errors.otp && formik.touched.otp ? 'failure' : ''}
                                 />
+                                {
+                                    formik.errors.otp && formik.touched.otp ? (
+                                        <div className="text-sm mt-1 text-red-600">{formik.errors.otp}</div>
+                                    ) : null
+                                }
                             </div>
 
-                            <Button gradientDuoTone='purpleToBlue' type="submit" className="capitalize w-full" disabled={loading}>
+                            <Button gradientDuoTone='purpleToBlue' type="submit" className="capitalize w-full" disabled={formik.isSubmitting}>
                                 {
-                                    loading ? (
+                                    formik.isSubmitting ? (
                                         <>
                                             <Spinner size='sm' />
                                             <span className="pl-3">Loading...</span>
@@ -104,7 +118,7 @@ export default function VerifyModal({ show, onClose, onOpenSignIn }) {
                     </div>
                 </Modal.Body>
             </Modal>
-            
+
         </>
     )
 }

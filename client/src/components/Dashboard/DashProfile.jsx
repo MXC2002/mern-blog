@@ -124,9 +124,7 @@ export default function DashProfile() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData
-        }),
+        body: JSON.stringify(formData),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -136,8 +134,7 @@ export default function DashProfile() {
         setImageFileUploadProgress(null);
         toast.success('Cập nhật hồ sơ thành công', { duration: 4000 });
         setFormData({
-          username: '',
-          email: '',
+          ...formData,
           currentPassword: '',
           newPassword: '',
           confirmPassword: '',
@@ -251,27 +248,11 @@ export default function DashProfile() {
               onChange={handleChange}
             />
           </div>
-
-          {/* <div className="relative">
-
-            <Label htmlFor="password" className="absolute -top-3.5 left-3 text-sm px-1 text-gray-700 select-none z-10 bg-white dark:bg-[rgb(16,22,40)] dark:text-gray-200 rounded-sm">
-              Mật khẩu
-            </Label>
-
-            <TextInput
-              icon={HiLockClosed}
-              type="password"
-              id="password"
-              placeholder="Nhập Mật Khẩu"
-              onChange={handleChange}
-            />
-          </div> */}
-
           <div className="relative mb-6">
             <Label htmlFor="currentPassword" className="absolute -top-3.5 left-3 text-sm px-1 text-gray-700 select-none z-10 bg-white dark:bg-[rgb(16,22,40)] dark:text-gray-200 rounded-sm">
-              Mật Khẩu cũ
+              Mật Khẩu hiện tại
             </Label>
-            <TextInput onChange={handleChange} id="currentPassword" placeholder="Nhập Mật Khẩu cũ" type={showCurrentPassword ? 'text' : 'password'} value={formData.currentPassword} icon={HiLockClosed} />
+            <TextInput onChange={handleChange} id="currentPassword" placeholder="Nhập Mật Khẩu hiện tại" type={showCurrentPassword ? 'text' : 'password'} value={formData.currentPassword} icon={HiLockClosed} />
             <div className="absolute md:bottom-2.5 bottom-2 right-3" onClick={() => setShowCurrentPassword(!showCurrentPassword)}>
               {formData.currentPassword && (
                 <>

@@ -11,45 +11,57 @@ export const updateUser = async (req, res, next) => {
         return next(errorHandler(403, 'Bạn không được phép cập nhật người dùng này'));
     }
 
-    if (req.body.newPassword) {
-        if (!req.body.currentPassword) {
-            return next(errorHandler(400, 'Phải nhập mật khẩu cũ'));
+    // Lấy các trường dữ liệu từ request body
+    const { username, email, profilePicture, currentPassword, newPassword } = req.body;
+
+    // Kiểm tra mật khẩu hiện tại và cập nhật mật khẩu mới nếu có
+    if (currentPassword && currentPassword !== '') {
+        const user = await User.findById(req.params.userId);
+        const isMatch = bcryptjs.compareSync(currentPassword, user.password);
+        if (!isMatch) {
+            return next(errorHandler(401, 'Mật khẩu hiện tại không đúng'));
         }
-        if (req.body.currentPassword) {
-            const user = await User.findById(req.params.userId)
-            const isMatch = bcryptjs.compareSync(req.body.currentPassword, user.password)
-            if (!isMatch) {
-                return next(errorHandler(401, 'Mật khẩu cũ không đúng'));
-            }
+        if (!newPassword) {
+            return next(errorHandler(400, 'Phải nhập mật khẩu mới'));
         }
-        if (req.body.newPassword.length < 6) {
+    }
+
+    // Xử lý mật khẩu mới nếu được cung cấp
+    let hashedPassword;
+    if (newPassword && newPassword !== '') {
+        if (newPassword.length < 6) {
             return next(errorHandler(400, 'Mật khẩu mới phải có ít nhất 6 ký tự'));
         }
-        req.body.newPassword = bcryptjs.hashSync(req.body.newPassword, 10);
+        hashedPassword = bcryptjs.hashSync(newPassword, 10);
     }
 
-    if (req.body.username) {
-        if (req.body.username.length < 4 || req.body.username.length > 20) {
+    // Xây dựng đối tượng chứa các trường dữ liệu cần cập nhật
+    const updateFields = {};
+    if (username) {
+        if (username.length < 4 || username.length > 20) {
             return next(errorHandler(400, 'Tên người dùng phải có từ 4 đến 20 ký tự'));
         }
+        updateFields.username = username;
+    }
+    if (email) {
+        updateFields.email = email;
+    }
+    if (profilePicture) {
+        updateFields.profilePicture = profilePicture;
+    }
+    if (hashedPassword) {
+        updateFields.password = hashedPassword;
     }
 
-
     try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.userId, {
-            $set: {
-                username: req.body.username,
-                email: req.body.email,
-                profilePicture: req.body.profilePicture,
-                password: req.body.newPassword
-            }
-        }, { new: true })
+        // Thực hiện cập nhật và trả về người dùng đã cập nhật
+        const updatedUser = await User.findByIdAndUpdate(req.params.userId, updateFields, { new: true });
         const { password, ...rest } = updatedUser._doc;
         res.status(200).json(rest);
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};
 
 export const deleteUser = async (req, res, next) => {
     if (!req.user.isAdmin && req.user.id !== req.params.userId) {

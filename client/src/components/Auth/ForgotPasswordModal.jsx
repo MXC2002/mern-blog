@@ -1,50 +1,57 @@
 
 /* eslint-disable react/prop-types */
-import { Button, Alert, Label, Modal, TextInput, Spinner } from "flowbite-react";
+import { Button, Label, Modal, TextInput, Spinner, Alert } from "flowbite-react";
 import logo from '../../assets/images/logo.svg';
-import { useState } from "react";
 import toast from 'react-hot-toast';
 import { HiMail } from "react-icons/hi";
+import { useFormik } from "formik";
+import * as Yup from 'yup';
+import { useState } from "react";
 
 
 export default function ForgotPasswordModal({ show, onClose, onOpenResetPassword }) {
-    const [email, setEmail] = useState('');
-    const [errorMessage, setErrorMessage] = useState(null);
-    const [loading, setLoading] = useState(false)
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!email) {
-            return setErrorMessage('Vui lòng nhập email của bạn')
-        }
-        try {
-            setLoading(true);
-            setErrorMessage(null)
-            const res = await fetch('/api/auth/forgot-password', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({email}),
-            })
-            // eslint-disable-next-line no-unused-vars
-            const data = await res.json();
-            if (!res.ok) {
-                setLoading(false)
-                return setErrorMessage(data.message)
+    const [errorMessage, setErrorMessage] = useState(null);
+
+    const formik = useFormik({
+        initialValues: {
+            email: ''
+        },
+        validationSchema: Yup.object({
+            email: Yup.string()
+                .required('Vui lòng điền vào Email')
+                .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Email không hợp lệ')
+        }),
+        onSubmit: async (values, { setSubmitting } ) => {
+            try {
+                setSubmitting(true);
+                setErrorMessage(null);
+                const res = await fetch('/api/auth/forgot-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({email: values.email}),
+                })
+                // eslint-disable-next-line no-unused-vars
+                const data = await res.json();
+                if (!res.ok) {
+                    setSubmitting(false);
+                    return setErrorMessage(data.message);
+                }
+                setSubmitting(false);
+                localStorage.setItem("resetToken", data.resetToken);
+                toast.success('Mã đặt lại mật khẩu đã gởi đến Mail của bạn', { duration: 3000 })
+                onOpenResetPassword();
+            } catch (error) {
+                setErrorMessage(error.message);
+                setSubmitting(false);
             }
-            setLoading(false)
-            localStorage.setItem("resetToken", data.resetToken);
-            toast.success('Mã đặt lại mật khẩu đã gởi đến Mail của bạn', { duration: 3000 })
-            onOpenResetPassword();
-        } catch (error) {
-            setErrorMessage(error.message)
-            setLoading(false)
         }
-    };
+    });
 
     const handleClose = () => {
-        setEmail('');
+        formik.resetForm();
         setErrorMessage(null);
         onClose();
     };
@@ -67,7 +74,7 @@ export default function ForgotPasswordModal({ show, onClose, onOpenResetPassword
                                 </Alert>
                             )
                         }
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={formik.handleSubmit}>
 
 
                             <div className="mb-4">
@@ -77,17 +84,25 @@ export default function ForgotPasswordModal({ show, onClose, onOpenResetPassword
                                 <TextInput
                                     id="email"
                                     type="email"
+                                    name="email"
                                     placeholder="Nhập Email"
                                     required
                                     icon={HiMail}
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value.trim())}
+                                    value={formik.values.email}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    color={formik.errors.email && formik.touched.email ? 'failure' : ''}
                                 />
+                                {
+                                    formik.errors.email && formik.touched.email ? (
+                                        <div className="text-sm mt-1 text-red-600">{formik.errors.email}</div>
+                                    ) : null
+                                }
                             </div>
 
-                            <Button gradientDuoTone='purpleToBlue' type="submit" className="capitalize w-full" disabled={loading}>
+                            <Button gradientDuoTone='purpleToBlue' type="submit" className="capitalize w-full" disabled={formik.isSubmitting}>
                                 {
-                                    loading ? (
+                                    formik.isSubmitting ? (
                                         <>
                                             <Spinner size='sm' />
                                             <span className="pl-3">Loading...</span>

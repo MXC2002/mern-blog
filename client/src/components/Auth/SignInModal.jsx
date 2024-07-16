@@ -9,54 +9,55 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SignInStart, SignInSuccess, SignInFailure } from "../../redux/user/userSlice";
 import OAuth from "../OAuth/OAuth";
 import toast from "react-hot-toast";
-
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 
 export default function SignInModal({ show, onClose, onOpenSignUp, onOpenForgotPassword }) {
-
-    const [formData, setFormData] = useState({});
     const { loading, error: errorMessage } = useSelector(state => state.user)
     const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: ''
+        },
+        validationSchema: Yup.object({
+            email: Yup.string()
+                .required('Vui lòng điền vào Email')
+                .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Email không hợp lệ'),
+            password: Yup.string()
+                .required('Vui lòng điền vào Mật khẩu')
+        }),
+        onSubmit: async (values) => {
 
-        dispatch(SignInFailure(null))
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!formData.password || !formData.email) {
-            return dispatch(SignInFailure('Vui lòng điền vào tất cả các trường'))
-        }
-        try {
-            dispatch(SignInStart());
-            const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData),
-            })
-            // eslint-disable-next-line no-unused-vars
-            const data = await res.json();
-            if (data.success === false) {
-                return dispatch(SignInFailure(data.message))
-            }
-
-            if (res.ok) {
+            try {
+                dispatch(SignInStart());
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(values),
+                })
+                // eslint-disable-next-line no-unused-vars
+                const data = await res.json();
+                if (!res.ok) {
+                    return dispatch(SignInFailure(data.message));
+                }
                 dispatch(SignInSuccess(data))
                 toast(`Chào mừng ${data.username}`,
-                    { icon: '🤩'}, 
+                    { icon: '🤩' },
                     { duration: 3000 }
                 );
                 onClose();
+
+            } catch (error) {
+                dispatch(SignInFailure(error.message));
             }
-        } catch (error) {
-            dispatch(SignInFailure(error.message))
         }
-    };
+    });
 
     const handleClose = () => {
         dispatch(SignInFailure(null));
@@ -94,28 +95,46 @@ export default function SignInModal({ show, onClose, onOpenSignUp, onOpenForgotP
                                 </Alert>
                             )
                         }
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={formik.handleSubmit}>
                             <div className="mb-4">
                                 <div className="mb-2 block select-none">
                                     <Label className="select-none" htmlFor="email" value="Email" />
                                 </div>
                                 <TextInput
                                     id="email"
+                                    name="email"
                                     type="email"
                                     placeholder="Nhập Email"
-                                    required
                                     icon={HiMail}
-                                    onChange={handleChange}
+                                    value={formik.values.email}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    color={formik.errors.email && formik.touched.email ? 'failure' : ''}
                                 />
+                                {
+                                    formik.errors.email && formik.touched.email ? (
+                                        <div className="text-sm mt-1 text-red-600">{formik.errors.email}</div>
+                                    ) : null
+                                }
                             </div>
 
                             <div className="relative mb-6">
                                 <div className="mb-2 block select-none">
                                     <Label htmlFor="password" value="Mật khẩu" />
                                 </div>
-                                <TextInput onChange={handleChange} id="password" placeholder="Nhập Mật Khẩu" type={showPassword ? 'text' : 'password'} required icon={HiLockClosed} />
-                                <div className="absolute md:bottom-2.5 bottom-2 right-3" onClick={() => setShowPassword(!showPassword)}>
-                                    {formData.password && (
+                                <TextInput
+                                    id="password"
+                                    name="password"
+                                    placeholder="Nhập Mật Khẩu"
+                                    type={showPassword ? 'text' : 'password'}
+                                    icon={HiLockClosed}
+                                    value={formik.values.password}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    color={formik.errors.password && formik.touched.password ? 'failure' : ''}
+                                />
+                                <div className="absolute md:bottom-2.5 bottom-2 right-3 select-none" onClick={() => setShowPassword(!showPassword)}>
+                                    {formik.values.password && (
                                         <>
                                             {
                                                 showPassword ? (
@@ -131,6 +150,12 @@ export default function SignInModal({ show, onClose, onOpenSignUp, onOpenForgotP
                                         </>
                                     )}
                                 </div>
+
+                                {
+                                    formik.errors.password && formik.touched.password ? (
+                                        <div className="text-sm mt-1 text-red-600">{formik.errors.password}</div>
+                                    ) : null
+                                }
                             </div>
 
                             <Button gradientDuoTone='purpleToBlue' type="submit" className="capitalize w-full" disabled={loading}>
@@ -152,7 +177,7 @@ export default function SignInModal({ show, onClose, onOpenSignUp, onOpenForgotP
                             </div>
                         </div>
 
-                        <div className="relative my-4">
+                        <div className="relative">
                             <div className="absolute inset-0 flex items-center">
                                 <div className="w-full border-t border-gray-300"></div>
                             </div>
@@ -162,7 +187,7 @@ export default function SignInModal({ show, onClose, onOpenSignUp, onOpenForgotP
                         </div>
 
                         <div className="space-y-2">
-                            <OAuth onSuccess={handleClose}/>
+                            <OAuth onSuccess={handleClose} />
                         </div>
 
                         <div className="flex justify-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-300">

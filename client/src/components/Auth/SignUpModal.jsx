@@ -3,61 +3,66 @@ import { Button, Alert, Label, Modal, TextInput, Spinner } from "flowbite-react"
 import { HiLockClosed, HiMail, HiUser } from 'react-icons/hi';
 import logo from '../../assets/images/logo.svg';
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import {useState } from "react";
+import { useState } from "react";
 import OAuth from "../OAuth/OAuth";
 import toast from 'react-hot-toast';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 
 export default function SignUpModal({ show, onClose, onOpenSignIn, onOpenVerify }) {
-    const [formData, setFormData] = useState({});
     const [errorMessage, setErrorMessage] = useState(null);
-    const [loading, setLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
-
-        setErrorMessage(null)
-        setLoading(false)
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!formData.username || !formData.password || !formData.email || !formData.confirmPassword) {
-            return setErrorMessage('Vui lòng điền vào tất cả các trường')
-        }
-
-        if (formData.password !== formData.confirmPassword) {
-            return setErrorMessage('Mật khẩu và Xác nhận mật khẩu phải trùng nhau')
-        }
-
-        try {
-            setLoading(true);
-            setErrorMessage(null)
-            const res = await fetch('/api/auth/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData),
-            })
-            // eslint-disable-next-line no-unused-vars
-            const data = await res.json();
-            if (!res.ok) {
-                setLoading(false)
-                return setErrorMessage(data.message)
+    const formik = useFormik({
+        initialValues: {
+            username: '',
+            password: '',
+            email: '',
+            confirmPassword: ''
+        },
+        validationSchema: Yup.object({
+            username: Yup.string()
+                .required('Vui lòng điền vào Tên người dùng')
+                .min(4, 'Tên người dùng phải có ít nhất 4 ký tự'),
+            password: Yup.string()
+                .required('Vui lòng điền vào Mật khẩu')
+                .min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
+            email: Yup.string()
+                .required('Vui lòng điền vào Email')
+                .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Email không hợp lệ'),
+            confirmPassword: Yup.string()
+                .required('Vui lòng điền vào Xác nhận mật khẩu')
+                .oneOf([Yup.ref('password'), null], 'Không trùng khớp với Mật khẩu')
+        }),
+        onSubmit: async (values, { setSubmitting }) => {
+            try {
+                setSubmitting(true);
+                setErrorMessage(null)
+                const res = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(values),
+                })
+                // eslint-disable-next-line no-unused-vars
+                const data = await res.json();
+                if (!res.ok) {
+                    setSubmitting(false)
+                    return setErrorMessage(data.message)
+                }
+                setSubmitting(false)
+                localStorage.setItem("activationToken", data.activationToken);
+                toast.success('Mã xác thực đã gởi đến Mail của bạn', { duration: 3000 })
+                onOpenVerify();
+            } catch (error) {
+                setErrorMessage(error.message)
+                setSubmitting(false)
             }
-            setLoading(false)
-            localStorage.setItem("activationToken", data.activationToken);
-            toast.success('Mã xác thực đã gởi đến Mail của bạn', { duration: 3000 })
-            onOpenVerify();
-        } catch (error) {
-            setErrorMessage(error.message)
-            setLoading(false)
         }
-    };
+    });
 
     const handleOpenSignIn = () => {
         setErrorMessage(null);
@@ -86,8 +91,7 @@ export default function SignUpModal({ show, onClose, onOpenSignIn, onOpenVerify 
                                 </Alert>
                             )
                         }
-                        <form onSubmit={handleSubmit}>
-
+                        <form onSubmit={formik.handleSubmit}>
 
                             <div className="mb-4">
                                 <div className="mb-2 block select-none">
@@ -95,12 +99,21 @@ export default function SignUpModal({ show, onClose, onOpenSignIn, onOpenVerify 
                                 </div>
                                 <TextInput
                                     id="username"
+                                    name="username"
                                     type="text"
                                     placeholder="Nhập Tên Người Dùng"
                                     required
                                     icon={HiUser}
-                                    onChange={handleChange}
+                                    value={formik.values.username}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    color={formik.errors.username && formik.touched.username ? 'failure' : ''}
                                 />
+                                {
+                                    formik.errors.username && formik.touched.username ? (
+                                        <div className="text-sm mt-1 text-red-600">{formik.errors.username}</div>
+                                    ) : null
+                                }
                             </div>
 
                             <div className="mb-4">
@@ -109,65 +122,112 @@ export default function SignUpModal({ show, onClose, onOpenSignIn, onOpenVerify 
                                 </div>
                                 <TextInput
                                     id="email"
+                                    name="email"
                                     type="email"
                                     placeholder="Nhập Email"
                                     required
                                     icon={HiMail}
-                                    onChange={handleChange}
+                                    value={formik.values.email}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    color={formik.errors.email && formik.touched.email ? 'failure' : ''}
                                 />
-                            </div>
-
-                            <div className="relative mb-6">
-                                <div className="mb-2 block select-none">
-                                    <Label htmlFor="password" value="Mật Khẩu" />
-                                </div>
-                                <TextInput onChange={handleChange} id="password" placeholder="Nhập Mật Khẩu" type={showPassword ? 'text' : 'password'} required icon={HiLockClosed} />
-                                <div className="absolute md:bottom-2.5 bottom-2 right-3" onClick={() => setShowPassword(!showPassword)}>
-                                    {formData.password && (
-                                        <>
-                                            {
-                                                showPassword ? (
-                                                    <AiFillEye
-                                                        className="cursor-pointer text-2xl md:text-lg"
-
-                                                    />
-                                                ) : (
-                                                    <AiFillEyeInvisible
-                                                        className="cursor-pointer text-2xl md:text-lg"
-                                                    />
-                                                )}
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="relative mb-6">
-                                <div className="mb-2 block select-none">
-                                    <Label htmlFor="confirmPassword" value="Xác Nhận Mật Khẩu" />
-                                </div>
-                                <TextInput onChange={handleChange} id="confirmPassword" placeholder="Nhập Mật Khẩu" type={showConfirmPassword ? 'text' : 'password'} required icon={HiLockClosed} />
-                                <div className="absolute md:bottom-2.5 bottom-2 right-3" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-                                    {formData.confirmPassword && (
-                                        <>
-                                            {
-                                                showConfirmPassword ? (
-                                                    <AiFillEye
-                                                        className="cursor-pointer text-2xl md:text-lg"
-
-                                                    />
-                                                ) : (
-                                                    <AiFillEyeInvisible
-                                                        className="cursor-pointer text-2xl md:text-lg"
-                                                    />
-                                                )}
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-
-                            <Button gradientDuoTone='purpleToBlue' type="submit" className="capitalize w-full" disabled={loading}>
                                 {
-                                    loading ? (
+                                    formik.errors.email && formik.touched.email ? (
+                                        <div className="text-sm mt-1 text-red-600">{formik.errors.email}</div>
+                                    ) : null
+                                }
+                            </div>
+
+                            <div className="mb-6">
+                                <div className="relative">
+                                    <div className="mb-2 block select-none">
+                                        <Label htmlFor="password" value="Mật Khẩu" />
+                                    </div>
+                                    <TextInput
+                                        id="password"
+                                        name="password"
+                                        placeholder="Nhập Mật Khẩu"
+                                        type={showPassword ? 'text' : 'password'}
+                                        required
+                                        icon={HiLockClosed}
+                                        value={formik.values.password}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        color={formik.errors.password && formik.touched.password ? 'failure' : ''}
+                                    />
+                                    <div className="absolute md:bottom-2.5 bottom-2 right-3 select-none" onClick={() => setShowPassword(!showPassword)}>
+                                        {formik.values.password && (
+                                            <>
+                                                {
+                                                    showPassword ? (
+                                                        <AiFillEye
+                                                            className="cursor-pointer text-2xl md:text-lg"
+
+                                                        />
+                                                    ) : (
+                                                        <AiFillEyeInvisible
+                                                            className="cursor-pointer text-2xl md:text-lg"
+                                                        />
+                                                    )}
+                                            </>
+                                        )}
+                                    </div>
+
+                                </div>
+                                {
+                                    formik.errors.password && formik.touched.password ? (
+                                        <div className="text-sm mt-1 text-red-600">{formik.errors.password}</div>
+                                    ) : null
+                                }
+                            </div>
+
+                            <div className="mb-6">
+                                <div className="relative">
+                                    <div className="mb-2 block select-none">
+                                        <Label htmlFor="confirmPassword" value="Xác Nhận Mật Khẩu" />
+                                    </div>
+                                    <TextInput
+                                        id="confirmPassword"
+                                        name="confirmPassword"
+                                        placeholder="Nhập Mật Khẩu"
+                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        required
+                                        icon={HiLockClosed}
+                                        value={formik.values.confirmPassword}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        color={formik.errors.confirmPassword && formik.touched.confirmPassword ? 'failure' : ''}
+                                    />
+                                    <div className="absolute md:bottom-2.5 bottom-2 right-3 select-none" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                                        {formik.values.confirmPassword && (
+                                            <>
+                                                {
+                                                    showConfirmPassword ? (
+                                                        <AiFillEye
+                                                            className="cursor-pointer text-2xl md:text-lg"
+
+                                                        />
+                                                    ) : (
+                                                        <AiFillEyeInvisible
+                                                            className="cursor-pointer text-2xl md:text-lg"
+                                                        />
+                                                    )}
+                                            </>
+                                        )}
+                                    </div>
+
+                                </div>
+                                {
+                                    formik.errors.confirmPassword && formik.touched.confirmPassword ? (
+                                        <div className="text-sm mt-1 text-red-600">{formik.errors.confirmPassword}</div>
+                                    ) : null
+                                }
+                            </div>
+
+                            <Button gradientDuoTone='purpleToBlue' type="submit" className="capitalize w-full" disabled={formik.isSubmitting}>
+                                {
+                                    formik.isSubmitting ? (
                                         <>
                                             <Spinner size='sm' />
                                             <span className="pl-3">Loading...</span>
